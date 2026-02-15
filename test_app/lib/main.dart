@@ -4,8 +4,25 @@ void main(){
   runApp(FirstApp());
 }
 
-class FirstApp extends StatelessWidget {
+class FirstApp extends StatefulWidget {
   const FirstApp({super.key});
+
+  @override
+  State<FirstApp> createState() => _FirstAppState();
+}
+
+class _FirstAppState extends State<FirstApp> {
+  var verified = false;
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +67,7 @@ class FirstApp extends StatelessWidget {
               height: 500,
               width: 500,
               color: Colors.yellow,
-              child: const Text('Hallo')
+              child: Text('verified: $verified')
             ),
             Container(
               height: 500,
@@ -63,7 +80,10 @@ class FirstApp extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.verified),
           onPressed: (){
-            print("verified");
+            setState(() {
+              verified = !verified;
+            });
+            print("verified: $verified");
           }
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -88,5 +108,4 @@ class FirstApp extends StatelessWidget {
       ),
     );
   }
-
 }
