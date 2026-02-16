@@ -15,7 +15,9 @@ class _CalcState extends State<Calc> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(body: DisplayBar(to_display: "Halllloooooo")),
+      home: Scaffold(
+        body: Center(child: DisplayBar(to_display: "Halllloooooo")),
+      ),
     );
   }
 }
