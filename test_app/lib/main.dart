@@ -19,6 +19,7 @@ class _CalcState extends State<Calc> {
   double num2 = 0;
   bool num1Selected = true;
   bool num2Selected = false;
+  bool resTyping = false;
   double res = 0;
   var oper = Operators.none;
 
@@ -44,16 +45,18 @@ class _CalcState extends State<Calc> {
         default:
           break;
       }
+      num2 = 0;
     });
   }
 
-  void setNum(int n1) {
+  void setNum(int n) {
     setState(() {
       if (num1Selected) {
-        num1 = n1.toDouble();
-        num1Selected = false;
+        num1 *= 10;
+        num1 += n.toDouble();
       } else {
-        num2 = n1.toDouble();
+        num2 *= 10;
+        num2 += n.toDouble();
         num2Selected = true;
       }
     });
@@ -70,10 +73,25 @@ class _CalcState extends State<Calc> {
     });
   }
 
+  void handleOperations(Operators op) {
+    setState((){
+    if (op == Operators.equal) {
+      setRes();
+    } 
+    else if(op == Operators.clear){
+      clear();
+    }
+    else{
+      if(oper == Operators.equal) num1 = res;
+      num1Selected = false;
+    }
+    oper = op;
+    });
+  }
+
   String toPrint() {
     if (oper == Operators.equal){
       setState((){
-        oper = Operators.none;
         num1Selected = true;
         num2Selected = false;
       });
@@ -100,17 +118,6 @@ class _CalcState extends State<Calc> {
     if (!num2Selected) return temp;
     temp += formatter.format(num2);
     return temp;
-  }
-
-  void handleOperations(Operators op) {
-    setState((){
-    if (op == Operators.equal) {
-      setRes();
-    } else if (op == Operators.clear) {
-      clear();
-    }
-    oper = op;
-    });
   }
 
   @override
