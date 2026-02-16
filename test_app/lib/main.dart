@@ -74,24 +74,22 @@ class _CalcState extends State<Calc> {
   }
 
   void handleOperations(Operators op) {
-    setState((){
-    if (op == Operators.equal) {
-      setRes();
-    } 
-    else if(op == Operators.clear){
-      clear();
-    }
-    else{
-      if(oper == Operators.equal) num1 = res;
-      num1Selected = false;
-    }
-    oper = op;
+    setState(() {
+      if (op == Operators.equal) {
+        setRes();
+      } else if (op == Operators.clear) {
+        clear();
+      } else {
+        if (oper == Operators.equal) num1 = res;
+        num1Selected = false;
+      }
+      oper = op;
     });
   }
 
   String toPrint() {
-    if (oper == Operators.equal){
-      setState((){
+    if (oper == Operators.equal) {
+      setState(() {
         num1Selected = true;
         num2Selected = false;
       });
@@ -270,11 +268,34 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String txt;
+    switch (op) {
+      case Operators.add:
+        txt = "+";
+        break;
+      case Operators.subtract:
+        txt = "-";
+        break;
+      case Operators.multiply:
+        txt = "*";
+        break;
+      case Operators.divide:
+        txt = "/";
+        break;
+      case Operators.clear:
+        txt = "AC";
+      case Operators.equal:
+        txt = "=";
+      default:
+        txt = "errrrroooro";
+        break;
+    }
+
     return ElevatedButton(
       onPressed: () {
         updateOp(op);
       },
-      child: Text("$op"),
+      child: Text(txt),
     );
   }
 }
