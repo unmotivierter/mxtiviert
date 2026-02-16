@@ -29,7 +29,6 @@ class _CalcState extends State<Calc> {
   double num2 = 0;
   bool num1Selected = true;
   bool num2Selected = false;
-  bool resTyping = false;
   double res = 0;
   String displayText1 = "";
   String displayText2 = "";
@@ -63,6 +62,11 @@ class _CalcState extends State<Calc> {
 
   void setNum(int n) {
     setState(() {
+      if(oper == Operators.equal){
+        num1Selected = true;
+        oper = Operators.none;
+        num1 = 0;
+      }
       if (num1Selected) {
         num1 *= 10;
         num1 += n.toDouble();
@@ -89,6 +93,8 @@ class _CalcState extends State<Calc> {
     setState(() {
       if (op == Operators.equal) {
         setRes();
+        num1Selected = true;
+        num2Selected = false;
       } else if (op == Operators.clear) {
         clear();
       } else {
@@ -102,8 +108,6 @@ class _CalcState extends State<Calc> {
   String toPrint() {
     if (oper == Operators.equal) {
       setState(() {
-        num1Selected = true;
-        num2Selected = false;
         displayText2 = displayText1;
       });
       return formatter.format(res);
