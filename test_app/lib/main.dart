@@ -50,3 +50,17 @@ class DisplayBar extends StatelessWidget {
     return Container(child: Text(toDisplay));
   }
 }
+
+class Buttons extends StatelessWidget {
+  const Buttons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        _CalcState.
+      },
+      child: Icon(Icons.numbers),
+    );
+  }
+}
