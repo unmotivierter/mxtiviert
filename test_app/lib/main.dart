@@ -12,7 +12,17 @@ class Calc extends StatefulWidget {
   State<Calc> createState() => _CalcState();
 }
 
-enum Operators { none, add, subtract, multiply, divide, equal, clear }
+enum Operators {
+  none,
+  add,
+  subtract,
+  multiply,
+  divide,
+  equal,
+  clear,
+  signed,
+  dot,
+}
 
 class _CalcState extends State<Calc> {
   double num1 = 0;
@@ -146,6 +156,10 @@ class _CalcState extends State<Calc> {
                           Buttons(updateNums: setNum, id: 7),
                           Buttons(updateNums: setNum, id: 4),
                           Buttons(updateNums: setNum, id: 1),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.signed,
+                          ),
                         ],
                       ),
 
@@ -163,6 +177,10 @@ class _CalcState extends State<Calc> {
                           Buttons(updateNums: setNum, id: 9),
                           Buttons(updateNums: setNum, id: 6),
                           Buttons(updateNums: setNum, id: 3),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.dot,
+                          ),
                         ],
                       ),
                       Column(
@@ -309,8 +327,16 @@ class ActionButtons extends StatelessWidget {
         break;
       case Operators.clear:
         txt = "AC";
+        break;
       case Operators.equal:
         txt = "=";
+        break;
+      case Operators.dot:
+        txt = ".";
+        break;
+      case Operators.signed:
+        txt = "+/-";
+        break;
       default:
         txt = "errrrroooro";
         break;
