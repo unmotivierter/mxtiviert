@@ -32,6 +32,7 @@ class _CalcState extends State<Calc> {
   double res = 0;
   String displayText1 = "";
   String displayText2 = "";
+  bool isComma = false;
   var oper = Operators.none;
 
   var formatter = NumberFormat("0.####");
@@ -68,11 +69,21 @@ class _CalcState extends State<Calc> {
         num1 = 0;
       }
       if (num1Selected) {
-        num1 *= 10;
-        num1 += n.toDouble();
+        if(!isComma){
+          num1 *= 10;
+          num1 += n.toDouble();
+        }
+        else{
+          num1 += n.toDouble()/10;
+        }
       } else {
-        num2 *= 10;
-        num2 += n.toDouble();
+        if(!isComma){
+          num2 *= 10;
+          num2 += n.toDouble();
+        }
+        else{
+          num2 += n.toDouble()/10;
+        }
         num2Selected = true;
       }
     });
@@ -97,11 +108,6 @@ class _CalcState extends State<Calc> {
         num2Selected = false;
       } else if (op == Operators.clear) {
         clear();
-      } else if (op == Operators.signed) {
-        if (num1Selected)
-          num1 *= (-1);
-        else
-          num2 *= (-1);
       } else {
         if (oper == Operators.equal) num1 = res;
         num1Selected = false;
