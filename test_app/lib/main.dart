@@ -132,6 +132,9 @@ class _CalcState extends State<Calc> {
         break;
     }
     if (!num2Selected) return temp;
+    if(num2 < 0 && (oper == Operators.multiply || oper == Operators.divide)){
+      temp += "(${formatter.format(num2)})";
+    }
     temp += formatter.format(num2);
     setState(() {
       displayText1 = temp;
