@@ -62,7 +62,7 @@ class _CalcState extends State<Calc> {
 
   void setNum(int n) {
     setState(() {
-      if(oper == Operators.equal){
+      if (oper == Operators.equal) {
         num1Selected = true;
         oper = Operators.none;
         num1 = 0;
