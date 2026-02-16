@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -33,6 +35,7 @@ class _CalcState extends State<Calc> {
   String displayText1 = "";
   String displayText2 = "";
   bool isComma = false;
+  int decPlace = 0;
   var oper = Operators.none;
 
   var formatter = NumberFormat("0.####");
@@ -69,20 +72,20 @@ class _CalcState extends State<Calc> {
         num1 = 0;
       }
       if (num1Selected) {
-        if(!isComma){
+        if (!isComma) {
           num1 *= 10;
           num1 += n.toDouble();
-        }
-        else{
-          num1 += n.toDouble()/10;
+        } else {
+          num1 += n.toDouble() / pow(10, decPlace);
+          decPlace++;
         }
       } else {
-        if(!isComma){
+        if (!isComma) {
           num2 *= 10;
           num2 += n.toDouble();
-        }
-        else{
-          num2 += n.toDouble()/10;
+        } else {
+          num2 += n.toDouble() / pow(10, decPlace);
+          decPlace++;
         }
         num2Selected = true;
       }
@@ -102,12 +105,23 @@ class _CalcState extends State<Calc> {
 
   void handleOperations(Operators op) {
     setState(() {
+      isComma = false;
       if (op == Operators.equal) {
         setRes();
         num1Selected = true;
         num2Selected = false;
       } else if (op == Operators.clear) {
         clear();
+      } else if (op == Operators.signed) {
+        if (num1Selected)
+          num1 *= -1;
+        else
+          num2 *= -1;
+        return;
+      } else if (op == Operators.dot) {
+        isComma = true;
+        decPlace = 1;
+        return;
       } else {
         if (oper == Operators.equal) num1 = res;
         num1Selected = false;
@@ -143,10 +157,10 @@ class _CalcState extends State<Calc> {
         break;
     }
     if (!num2Selected) return temp;
-    if(num2 < 0 && (oper == Operators.multiply || oper == Operators.divide)){
+    if (num2 < 0 && (oper == Operators.multiply || oper == Operators.divide)) {
       temp += "(${formatter.format(num2)})";
-    }
-    temp += formatter.format(num2);
+    } else
+      temp += formatter.format(num2);
     setState(() {
       displayText1 = temp;
     });
@@ -326,6 +340,65 @@ class ActionButtons extends StatelessWidget {
   final Operators op;
 
   const ActionButtons({super.key, required this.updateOp, required this.op});
+
+  @override
+  Widget build(BuildContext context) {
+    String txt;
+    switch (op) {
+      case Operators.add:
+        txt = "+";
+        break;
+      case Operators.subtract:
+        txt = "-";
+        break;
+      case Operators.multiply:
+        txt = "*";
+        break;
+      case Operators.divide:
+        txt = "/";
+        break;
+      case Operators.clear:
+        txt = "AC";
+        break;
+      case Operators.equal:
+        txt = "=";
+        break;
+      case Operators.dot:
+        txt = ".";
+        break;
+      case Operators.signed:
+        txt = "+/-";
+        break;
+      default:
+        txt = "errrrroooro";
+        break;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width / 5,
+        height: MediaQuery.sizeOf(context).width / 5,
+        child: ElevatedButton(
+          onPressed: () {
+            updateOp(op);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.orange.shade600,
+          ),
+          //width: MediaQuery.sizeOf(context).width,
+          child: Text(txt),
+        ),
+      ),
+    );
+  }
+}
+
+class SpecialButtons extends StatelessWidget {
+  final Function(Operators) updateOp;
+  final Operators op;
+
+  const SpecialButtons({super.key, required this.updateOp, required this.op});
 
   @override
   Widget build(BuildContext context) {
