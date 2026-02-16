@@ -1,94 +1,32 @@
 import 'package:flutter/material.dart';
 
-void main(){
-  runApp(MaterialApp(
-    title: 'Basics',
-    home: FirstApp(),
-  ));
+void main() {
+  runApp(Calc());
 }
 
-class FirstApp extends StatelessWidget {
-  const FirstApp({super.key});
+class Calc extends StatefulWidget {
+  const Calc({super.key});
 
   @override
+  State<Calc> createState() => _CalcState();
+}
+
+class _CalcState extends State<Calc> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('First Route')),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Open route'),
-          onPressed: () {
-            Navigator.push(
-              context, 
-              MaterialPageRoute<void>(
-                builder: (context) => SecondRoute(),
-                ),
-              );
-          },
-        ),
-      ),
+    return const MaterialApp(
+      home: Scaffold(body: DisplayBar(to_display: "Halllloooooo")),
     );
   }
 }
 
-class SecondRoute extends StatelessWidget {
-  const SecondRoute({super.key});
+class DisplayBar extends StatelessWidget {
+  const DisplayBar({super.key, required this.to_display});
+
+  final String to_display;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Second Route')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThirdRoute(),
-                  )
-                );
-              },
-              child: const Text('Go further!'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.reddit_outlined),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-class ThirdRoute extends StatelessWidget{
-  const ThirdRoute({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Third Route'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: (){
-            Navigator.pop(
-              context,
-            );
-          }, 
-          child: Icon(Icons.reddit_rounded)
-          ),
-      ),
-    );
+    return Container(child: Text(to_display));
   }
 }
