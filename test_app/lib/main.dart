@@ -7,34 +7,35 @@ void main() {
 class Calc extends StatefulWidget {
   const Calc({super.key});
 
-
   @override
   State<Calc> createState() => _CalcState();
 }
 
-enum Operators{
-  add, 
-  subtract,
-  multiply,
-  divide,
-}
-
+enum Operators { add, subtract, multiply, divide }
 
 class _CalcState extends State<Calc> {
-
   double num1 = 0;
   double num2 = 0;
+  double res = 0;
   var oper = Operators.add;
 
-  double addNums(double n1, double n2){
-    return n1 + n2;
+  void addNums() {
+    setState(() {
+      res = 25;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: Center(child: DisplayBar(toDisplay: "Halllloooooo")),
+        body: Center(
+          child: Column(
+            children: [
+              DisplayBar(toDisplay: "$res"),
+              Buttons(updateNums: addNums),
+            ],
+          )),
       ),
     );
   }
@@ -52,15 +53,12 @@ class DisplayBar extends StatelessWidget {
 }
 
 class Buttons extends StatelessWidget {
-  const Buttons({super.key});
+  final VoidCallback updateNums;
+
+  const Buttons({super.key, required this.updateNums});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _CalcState.
-      },
-      child: Icon(Icons.numbers),
-    );
+    return ElevatedButton(onPressed: updateNums, child: Icon(Icons.numbers));
   }
 }
