@@ -12,7 +12,7 @@ class Calc extends StatefulWidget {
   State<Calc> createState() => _CalcState();
 }
 
-enum Operators { add, subtract, multiply, divide, equal, clear }
+enum Operators { none, add, subtract, multiply, divide, equal, clear }
 
 class _CalcState extends State<Calc> {
   double num1 = 0;
@@ -20,10 +20,9 @@ class _CalcState extends State<Calc> {
   bool num1Selected = true;
   bool num2Selected = false;
   double res = 0;
+  var oper = Operators.none;
 
   var formatter = NumberFormat("0.####");
-
-  var oper;
 
   void setRes() {
     setState(() {
@@ -66,12 +65,20 @@ class _CalcState extends State<Calc> {
       num2 = 0;
       res = 0;
       num1Selected = true;
+      oper = Operators.none;
       setRes();
     });
   }
 
   String toPrint() {
-    if (oper == Operators.equal) return formatter.format(res);
+    if (oper == Operators.equal){
+      setState((){
+        oper = Operators.none;
+        num1Selected = true;
+        num2Selected = false;
+      });
+      return formatter.format(res);
+    }
     if (num1Selected) return formatter.format(num1);
     String temp = formatter.format(num1);
     switch (oper) {
@@ -96,13 +103,14 @@ class _CalcState extends State<Calc> {
   }
 
   void handleOperations(Operators op) {
+    setState((){
     if (op == Operators.equal) {
       setRes();
     } else if (op == Operators.clear) {
       clear();
-    } else {
-      oper = op;
     }
+    oper = op;
+    });
   }
 
   @override
