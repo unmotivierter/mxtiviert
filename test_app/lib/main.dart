@@ -1,109 +1,92 @@
 import 'package:flutter/material.dart';
 
 void main(){
-  runApp(FirstApp());
+  runApp(MaterialApp(
+    title: 'Basics',
+    home: FirstApp(),
+  ));
 }
 
-class FirstApp extends StatefulWidget {
+class FirstApp extends StatelessWidget {
   const FirstApp({super.key});
 
   @override
-  State<FirstApp> createState() => _FirstAppState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('First Route')),
+      body: Center(
+        child: ElevatedButton(
+          child: const Text('Open route'),
+          onPressed: () {
+            Navigator.push(
+              context, 
+              MaterialPageRoute<void>(
+                builder: (context) => SecondRoute(),
+                ),
+              );
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _FirstAppState extends State<FirstApp> {
-  var verified = false;
-
-  @override
-  void initState(){
-    super.initState();
-  }
-
-  @override
-  void dispose(){
-    super.dispose();
-  }
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-            foregroundColor: Colors.purple,
-            backgroundColor: Colors.blue,
-            elevation: 0.2,
-            title: const Text('Flutter flutscht'),
-          ),
-        body: ListView(
-          scrollDirection: Axis.horizontal,
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Route')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                  Container(
-                    color: Colors.blueGrey,
-                    height: 100,
-                    width: 100,
-                    padding: const EdgeInsets.all(10),
-                    child: const Text('Wo ist PePe', style: TextStyle(color: Colors.amber),),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Icon(Icons.add, color: Colors.red,),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ThirdRoute(),
                   )
-                  ]
-                ),
-                Icon(Icons.heart_broken),
-                SizedBox(
-                  child: Icon(Icons.abc),
-                ),
-              ]
+                );
+              },
+              child: const Text('Go further!'),
             ),
-            Container(
-              height: 500,
-              width: 500,
-              color: Colors.yellow,
-              child: Text('verified: $verified')
-            ),
-            Container(
-              height: 500,
-              width: 1000,
-              color: Colors.green,
-              child: const Text('Dasselbe in grün')
-            ),
-          ]
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.verified),
-          onPressed: (){
-            setState(() {
-              verified = !verified;
-            });
-            print("verified: $verified");
-          }
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.work),
-              label: "work",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.headphones),
-              label: "Head",
-            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(Icons.reddit_outlined),
+              ),
+            )
           ],
-          ),
-          drawer: Drawer(
-            child: const Text('Yo!'),
+        ),
+      ),
+    );
+  }
+}
+
+
+class ThirdRoute extends StatelessWidget{
+  const ThirdRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Third Route'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: (){
+            Navigator.pop(
+              context,
+            );
+          }, 
+          child: Icon(Icons.reddit_rounded)
           ),
       ),
     );
