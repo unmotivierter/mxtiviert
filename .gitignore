@@ -1,0 +1,5 @@
+test_app/*
+!test_app/lib/
+!test_app/test/
+!test_app/pubspec.yaml
+first_concept.xopp
