@@ -21,6 +21,8 @@ class _CalcState extends State<Calc> {
   bool num2Selected = false;
   bool resTyping = false;
   double res = 0;
+  String displayText1 = "";
+  String displayText2 = "";
   var oper = Operators.none;
 
   var formatter = NumberFormat("0.####");
@@ -92,9 +94,11 @@ class _CalcState extends State<Calc> {
       setState(() {
         num1Selected = true;
         num2Selected = false;
+        displayText2 = displayText1;
       });
       return formatter.format(res);
     }
+    if (displayText2.isNotEmpty) displayText2 = "";
     if (num1Selected) return formatter.format(num1);
     String temp = formatter.format(num1);
     switch (oper) {
@@ -115,6 +119,9 @@ class _CalcState extends State<Calc> {
     }
     if (!num2Selected) return temp;
     temp += formatter.format(num2);
+    setState(() {
+      displayText1 = temp;
+    });
     return temp;
   }
 
@@ -126,7 +133,7 @@ class _CalcState extends State<Calc> {
         body: Center(
           child: Column(
             children: [
-              DisplayBar(toDisplay: toPrint()),
+              DisplayBar(toDisplay: toPrint(), toDisplay2: displayText2), 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -193,9 +200,10 @@ class _CalcState extends State<Calc> {
 }
 
 class DisplayBar extends StatelessWidget {
-  const DisplayBar({super.key, required this.toDisplay});
+  const DisplayBar({super.key, required this.toDisplay, required this.toDisplay2});
 
   final String toDisplay;
+  final String toDisplay2;
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +220,7 @@ class DisplayBar extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
                 child: Text(
-                  toDisplay,
+                  toDisplay2,
                   style: TextStyle(color: Colors.green, fontSize: 15),
                 ),
               ),
