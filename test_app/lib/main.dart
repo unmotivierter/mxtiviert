@@ -13,47 +13,18 @@ class Calc extends StatefulWidget {
   State<Calc> createState() => _CalcState();
 }
 
-<<<<<<< HEAD
-enum Operators { add, subtract, multiply, divide, equal}
-=======
 enum Operators { add, subtract, multiply, divide, equal, clear }
->>>>>>> 9c33fc1bd2703137a18204abe647d3073ee39d88
 
 class _CalcState extends State<Calc> {
   double num1 = 0;
   double num2 = 0;
   bool num1Selected = true;
-<<<<<<< HEAD
   bool num2Selected = false;
-=======
->>>>>>> 9c33fc1bd2703137a18204abe647d3073ee39d88
   double res = 0;
-  var oper;
-
-<<<<<<< HEAD
   var formatter = NumberFormat("0.####");
 
-  void setRes(double n1) {
-    setState(() {
-      num1 = n1;
-    });
-  }
+  var oper;
 
-  String toPrint(){
-    if(oper == Operators.equal) return formatter.format(res);
-    if(num1Selected) return formatter.format(num1);
-    String temp = formatter.format(num1);   
-    switch(oper){
-      case Operators.add: temp += "+"; break;
-      case Operators.subtract: temp += "-"; break;
-      case Operators.multiply: temp += "*"; break;
-      case Operators.divide: temp += "/"; break;
-      default: break;
-    }
-    if(!num2Selected) return temp;
-    temp += formatter.format(num2);
-    return temp;
-=======
   void setRes() {
     setState(() {
       num1Selected = true;
@@ -97,6 +68,22 @@ class _CalcState extends State<Calc> {
     });
   }
 
+  String toPrint(){
+    if(oper == Operators.equal) return formatter.format(res);
+    if(num1Selected) return formatter.format(num1);
+    String temp = formatter.format(num1);   
+    switch(oper){
+      case Operators.add: temp += "+"; break;
+      case Operators.subtract: temp += "-"; break;
+      case Operators.multiply: temp += "*"; break;
+      case Operators.divide: temp += "/"; break;
+      default: break;
+    }
+    if(!num2Selected) return temp;
+    temp += formatter.format(num2);
+    return temp;
+  }
+
   void handleOperations(Operators op) {
     if (op == Operators.equal) {
       setRes();
@@ -105,7 +92,6 @@ class _CalcState extends State<Calc> {
     } else {
       oper = op;
     }
->>>>>>> 9c33fc1bd2703137a18204abe647d3073ee39d88
   }
 
   @override
@@ -116,11 +102,7 @@ class _CalcState extends State<Calc> {
         body: Center(
           child: Column(
             children: [
-<<<<<<< HEAD
               DisplayBar(toDisplay: toPrint()),
-              Buttons(updateNums: setRes),
-=======
-              DisplayBar(toDisplay: "$num1 and $num2 equals $res"),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -178,7 +160,6 @@ class _CalcState extends State<Calc> {
                   ),
                 ],
               ),
->>>>>>> 9c33fc1bd2703137a18204abe647d3073ee39d88
             ],
           ),
         ),
@@ -236,9 +217,6 @@ class Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return ElevatedButton(onPressed: (){updateNums(1223412.234);}, child: Icon(Icons.numbers));
-=======
     return ElevatedButton(
       onPressed: () {
         updateNums(id);
@@ -262,6 +240,5 @@ class ActionButtons extends StatelessWidget {
       },
       child: Text("$op"),
     );
->>>>>>> 9c33fc1bd2703137a18204abe647d3073ee39d88
   }
 }
