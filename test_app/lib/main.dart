@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 void main() {
   runApp(Calc());
 }
@@ -68,18 +67,27 @@ class _CalcState extends State<Calc> {
     });
   }
 
-  String toPrint(){
-    if(oper == Operators.equal) return formatter.format(res);
-    if(num1Selected) return formatter.format(num1);
-    String temp = formatter.format(num1);   
-    switch(oper){
-      case Operators.add: temp += "+"; break;
-      case Operators.subtract: temp += "-"; break;
-      case Operators.multiply: temp += "*"; break;
-      case Operators.divide: temp += "/"; break;
-      default: break;
+  String toPrint() {
+    if (oper == Operators.equal) return formatter.format(res);
+    if (num1Selected) return formatter.format(num1);
+    String temp = formatter.format(num1);
+    switch (oper) {
+      case Operators.add:
+        temp += "+";
+        break;
+      case Operators.subtract:
+        temp += "-";
+        break;
+      case Operators.multiply:
+        temp += "*";
+        break;
+      case Operators.divide:
+        temp += "/";
+        break;
+      default:
+        break;
     }
-    if(!num2Selected) return temp;
+    if (!num2Selected) return temp;
     temp += formatter.format(num2);
     return temp;
   }
@@ -117,7 +125,7 @@ class _CalcState extends State<Calc> {
                   Column(
                     children: [
                       Buttons(updateNums: setNum, id: 8),
-                      Buttons(updateNums: setNum, id: 4),
+                      Buttons(updateNums: setNum, id: 5),
                       Buttons(updateNums: setNum, id: 2),
                       Buttons(updateNums: setNum, id: 0),
                     ],
@@ -183,11 +191,14 @@ class DisplayBar extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width,
             height: 25,
             color: Colors.blueGrey.shade800,
-            child: Align( 
+            child: Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                child: Text(toDisplay, style: TextStyle(color: Colors.green, fontSize: 15)),
+                child: Text(
+                  toDisplay,
+                  style: TextStyle(color: Colors.green, fontSize: 15),
+                ),
               ),
             ),
           ),
@@ -195,11 +206,18 @@ class DisplayBar extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width,
             height: 50,
             color: Colors.black,
-            child: Align( 
+            child: Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                child: Text(toDisplay, style: TextStyle(color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold)),
+                child: Text(
+                  toDisplay,
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),
