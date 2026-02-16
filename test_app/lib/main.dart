@@ -97,6 +97,11 @@ class _CalcState extends State<Calc> {
         num2Selected = false;
       } else if (op == Operators.clear) {
         clear();
+      } else if (op == Operators.signed) {
+        if (num1Selected)
+          num1 *= (-1);
+        else
+          num2 *= (-1);
       } else {
         if (oper == Operators.equal) num1 = res;
         num1Selected = false;
