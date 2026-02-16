@@ -20,6 +20,7 @@ class _CalcState extends State<Calc> {
   bool num1Selected = true;
   bool num2Selected = false;
   double res = 0;
+
   var formatter = NumberFormat("0.####");
 
   var oper;
@@ -27,6 +28,7 @@ class _CalcState extends State<Calc> {
   void setRes() {
     setState(() {
       num1Selected = true;
+      num2Selected = false;
       switch (oper) {
         case Operators.add:
           res = num1 + num2;
@@ -53,6 +55,7 @@ class _CalcState extends State<Calc> {
         num1Selected = false;
       } else {
         num2 = n1.toDouble();
+        num2Selected = true;
       }
     });
   }
