@@ -127,62 +127,68 @@ class _CalcState extends State<Calc> {
           child: Column(
             children: [
               DisplayBar(toDisplay: toPrint()),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Buttons(updateNums: setNum, id: 7),
-                      Buttons(updateNums: setNum, id: 4),
-                      Buttons(updateNums: setNum, id: 1),
-                    ],
-                  ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                  Column(
                     children: [
-                      Buttons(updateNums: setNum, id: 8),
-                      Buttons(updateNums: setNum, id: 5),
-                      Buttons(updateNums: setNum, id: 2),
-                      Buttons(updateNums: setNum, id: 0),
-                    ],
-                  ),
+                      Column(
+                        children: [
+                          Buttons(updateNums: setNum, id: 7),
+                          Buttons(updateNums: setNum, id: 4),
+                          Buttons(updateNums: setNum, id: 1),
+                        ],
+                      ),
 
-                  Column(
-                    children: [
-                      Buttons(updateNums: setNum, id: 9),
-                      Buttons(updateNums: setNum, id: 6),
-                      Buttons(updateNums: setNum, id: 3),
+                      Column(
+                        children: [
+                          Buttons(updateNums: setNum, id: 8),
+                          Buttons(updateNums: setNum, id: 5),
+                          Buttons(updateNums: setNum, id: 2),
+                          Buttons(updateNums: setNum, id: 0),
+                        ],
+                      ),
+
+                      Column(
+                        children: [
+                          Buttons(updateNums: setNum, id: 9),
+                          Buttons(updateNums: setNum, id: 6),
+                          Buttons(updateNums: setNum, id: 3),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.add,
+                          ),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.subtract,
+                          ),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.multiply,
+                          ),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.divide,
+                          ),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.equal,
+                          ),
+                          ActionButtons(
+                            updateOp: handleOperations,
+                            op: Operators.clear,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.add,
-                      ),
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.subtract,
-                      ),
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.multiply,
-                      ),
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.divide,
-                      ),
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.equal,
-                      ),
-                      ActionButtons(
-                        updateOp: handleOperations,
-                        op: Operators.clear,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -251,11 +257,18 @@ class Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        updateNums(id);
-      },
-      child: Text("$id"),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width / 5,
+        height: MediaQuery.sizeOf(context).width / 5,
+        child: ElevatedButton(
+          onPressed: () {
+            updateNums(id);
+          },
+          child: Text("$id"),
+        ),
+      ),
     );
   }
 }
@@ -291,11 +304,22 @@ class ActionButtons extends StatelessWidget {
         break;
     }
 
-    return ElevatedButton(
-      onPressed: () {
-        updateOp(op);
-      },
-      child: Text(txt),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width / 5,
+        height: MediaQuery.sizeOf(context).width / 5,
+        child: ElevatedButton(
+          onPressed: () {
+            updateOp(op);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.orange.shade600,
+          ),
+          //width: MediaQuery.sizeOf(context).width,
+          child: Text(txt),
+        ),
+      ),
     );
   }
 }
