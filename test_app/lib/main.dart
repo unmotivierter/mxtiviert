@@ -19,9 +19,9 @@ class _CalcState extends State<Calc> {
   double res = 0;
   var oper = Operators.add;
 
-  void addNums() {
+  void setRes(double n1) {
     setState(() {
-      res = 25;
+      res = n1;
     });
   }
 
@@ -33,7 +33,7 @@ class _CalcState extends State<Calc> {
           child: Column(
             children: [
               DisplayBar(toDisplay: "$res"),
-              Buttons(updateNums: addNums),
+              Buttons(updateNums: setRes),
             ],
           )),
       ),
@@ -53,12 +53,12 @@ class DisplayBar extends StatelessWidget {
 }
 
 class Buttons extends StatelessWidget {
-  final VoidCallback updateNums;
+  final Function(double) updateNums;
 
   const Buttons({super.key, required this.updateNums});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: updateNums, child: Icon(Icons.numbers));
+    return ElevatedButton(onPressed: (){updateNums(12);}, child: Icon(Icons.numbers));
   }
 }
