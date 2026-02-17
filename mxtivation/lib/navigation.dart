@@ -17,8 +17,8 @@ class _AppState extends State<App> {
   int currentinx = 0;
   int selectinx = 0;
   final List<StreakItem> streakItems = [
-    StreakItem("Streak 1", 12, 30, true),
-    StreakItem("Streak 2", 0, 4, false),
+    StreakItem("Streak 1", 12, 30, true, "Friendgroup"),
+    StreakItem("Streak 2", 0, 4, false, "PePe"),
   ];
 
   void selectTab(int i) {

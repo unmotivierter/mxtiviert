@@ -8,12 +8,7 @@ void main() {
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({super.key});
-
-  final List<StreakItem> streakItems = [
-    StreakItem("Streak 1", 12, 30, true),
-    StreakItem("Streak 2", 0, 4, false),
-  ];
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +28,7 @@ class StreakItem {
   int streakCount;
   int streakCountPb;
   bool solo;
+  String goaler; //name of person/group who have goal :)
   //add time left and time interval
-  StreakItem(this.title, this.streakCount, this.streakCountPb, this.solo);
+  StreakItem(this.title, this.streakCount, this.streakCountPb, this.solo, this.goaler);
 }

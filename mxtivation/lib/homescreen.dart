@@ -3,10 +3,18 @@ import 'main.dart';
 
 final int streakItemHeight = 150;
 
-class StreakScroller extends StatelessWidget {
+class StreakScroller extends StatefulWidget {
   const StreakScroller({super.key, required this.streakItems});
 
   final List<StreakItem> streakItems;
+
+  @override
+  State<StreakScroller> createState() => _StreakScrollerState();
+}
+
+class _StreakScrollerState extends State<StreakScroller> {
+
+  bool tapped = false;
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +22,12 @@ class StreakScroller extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.outlineVariant,
       itemExtent: streakItemHeight.toDouble(),
       scrollDirection: Axis.vertical,
+      onTap: (int i) {
+        debugPrint("$i");
+      },
       children: [
-        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[0]),
-        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[1]),
+        StreakScrollerItem(paddingSize: 10, streakItem: widget.streakItems[0]),
+        StreakScrollerItem(paddingSize: 10, streakItem: widget.streakItems[1]),
       ],
     );
   }
@@ -30,6 +41,7 @@ class StreakScrollerItem extends StatelessWidget {
   });
   final int paddingSize;
   final StreakItem streakItem;
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,19 +83,53 @@ class StreakScrollerItem extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                streakItem.title,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 25,
+          Positioned(
+            left: 125,
+            top: 10,
+            child: SizedBox(
+              width: MediaQuery.sizeOf(context).width/1.5,
+              height: 40,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  streakItem.title,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 25,
+                  ),
                 ),
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.center,
+            child: Text("Time left: ...wip",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            )
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                height: 15,
+                width: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(streakItem.goaler, style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          )
         ],
       ),
     );
