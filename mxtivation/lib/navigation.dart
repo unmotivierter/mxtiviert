@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'homescreen.dart';
 import 'main.dart';
+import 'goals.dart';
 
-enum TabItems { home, group, calendar, settings }
+enum TabItems { home, group, add, calendar, settings }
+
+TabItems currentTab = TabItems.home;
+
+List<StreakItem> streakItems = AddGoals().getStreakList();
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -13,18 +18,19 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  TabItems currentTab = TabItems.home;
   int currentinx = 0;
   int selectinx = 0;
-  final List<StreakItem> streakItems = [
-    StreakItem("Streak 1", 12, 30, true),
-    StreakItem("Streak 2", 0, 4, false),
-  ];
 
   void selectTab(int i) {
     setState(() {
       currentTab = TabItems.values[i];
       selectinx = i;
+      if (currentTab == TabItems.add) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddGoals()),
+        );
+      }
     });
   }
 
@@ -34,6 +40,7 @@ class _AppState extends State<App> {
       appBar: AppBar(title: _buildAppBar(context)),
       body: _buildBody(context),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -43,6 +50,11 @@ class _AppState extends State<App> {
           BottomNavigationBarItem(
             icon: Icon(Icons.group),
             label: "Groups",
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: "Add",
             backgroundColor: Theme.of(context).colorScheme.surface,
           ),
           BottomNavigationBarItem(
@@ -80,6 +92,8 @@ class _AppState extends State<App> {
 
       case TabItems.settings:
         selectedWidget = Text("Settings");
+      case TabItems.add:
+        selectedWidget = StreakScroller(streakItems: streakItems);
     }
 
     return Container(
@@ -88,36 +102,36 @@ class _AppState extends State<App> {
       child: selectedWidget,
     );
   }
+}
 
-  Widget _buildAppBar(BuildContext context) {
-    String title = "";
-    switch (currentTab) {
-      case TabItems.home:
-        title = "Home";
-        break;
-      case TabItems.group:
-        title = "Groups";
-        break;
-      case TabItems.calendar:
-        title = "Calendar";
-        break;
-      case TabItems.settings:
-        title = "Settings";
-        break;
-    }
-
-    return Container(
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primaryContainer,
-          ),
-        ),
-      ),
-      width: MediaQuery.of(context).size.width,
-
-      //color: Theme.of(context).colorScheme.inversePrimary,
-    );
+Widget _buildAppBar(BuildContext context) {
+  String title = "";
+  switch (currentTab) {
+    case TabItems.home:
+      title = "Home";
+      break;
+    case TabItems.group:
+      title = "Groups";
+      break;
+    case TabItems.calendar:
+      title = "Calendar";
+      break;
+    case TabItems.settings:
+      title = "Settings";
+      break;
+    case TabItems.add:
+      title = "Add Goal";
   }
+
+  return Container(
+    child: Center(
+      child: Text(
+        title,
+        style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+      ),
+    ),
+    width: MediaQuery.of(context).size.width,
+
+    //color: Theme.of(context).colorScheme.inversePrimary,
+  );
 }

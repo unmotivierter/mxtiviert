@@ -10,11 +10,6 @@ void main() {
 class MainApp extends StatelessWidget {
   MainApp({super.key});
 
-  final List<StreakItem> streakItems = [
-    StreakItem("Streak 1", 12, 30, true),
-    StreakItem("Streak 2", 0, 4, false),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
