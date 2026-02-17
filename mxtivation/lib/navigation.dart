@@ -26,6 +26,8 @@ class _AppState extends State<App> {
       currentTab = TabItems.values[i];
       selectinx = i;
       if (currentTab == TabItems.add) {
+        selectinx = 0;
+        currentinx = 0;
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AddGoals()),
