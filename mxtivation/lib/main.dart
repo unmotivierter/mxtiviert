@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:mxtivation/homescreen.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'homescreen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({super.key});
+
+  final List<StreakItem> streakItems = [StreakItem("Streak 1", 12, 30, true), StreakItem("Streak 2", 0, 4, false)];
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: FlexThemeData.light(scheme: FlexScheme.flutterDash),
+      darkTheme: FlexThemeData.dark(scheme: FlexScheme.flutterDash),
+      //themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
+      home: Scaffold(
+        body: StreakScroller(streakItems: streakItems),
+      ),
     );
   }
+}
+
+class StreakItem{
+  String title;
+  int streakCount;
+  int streakCountPb;
+  bool solo;
+  //add time left and time interval
+  StreakItem(this.title, this.streakCount, this.streakCountPb, this.solo);
 }
