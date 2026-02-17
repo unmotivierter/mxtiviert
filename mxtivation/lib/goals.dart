@@ -36,53 +36,56 @@ class _AddGoalsState extends State<AddGoals> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          TextFormField(
-            decoration: InputDecoration(
-              hint: Text(
-                "Enter your Goal Name: ",
-                style: TextStyle(fontSize: 20),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                hint: Text(
+                  "Enter your Goal Name: ",
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
+              onChanged: _onChanged,
             ),
-            onChanged: _onChanged,
-          ),
-          Row(
-            children: [
-              Text("Is this a solo project?", style: TextStyle(fontSize: 20)),
-              Checkbox(
-                value: isSolo,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isSolo = value!;
-                  });
-                },
-              ),
-            ],
-          ),
+            Row(
+              children: [
+                Text("Is this a solo project?", style: TextStyle(fontSize: 20)),
+                Checkbox(
+                  value: isSolo,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isSolo = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
 
-          Row(
-            children: [
-              Text("Select your group", style: TextStyle(fontSize: 20)),
-              DropdownMenu(
-                enabled: !isSolo,
+            Row(
+              children: [
+                Text("Select your group", style: TextStyle(fontSize: 20)),
+                DropdownMenu(
+                  enabled: !isSolo,
 
-                label: Text("Personal"),
-                dropdownMenuEntries: [
-                  DropdownMenuEntry(value: "Personal", label: "Personal"),
-                  DropdownMenuEntry(value: "gr2", label: "Group1"),
-                  DropdownMenuEntry(value: "gr3", label: "Group2"),
-                ],
-                onSelected: (ValueNotifier) {
-                  setState(() {
-                    group = ValueNotifier.toString();
-                  });
-                },
-              ),
-            ],
-          ),
-          ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
-        ],
+                  label: Text("Personal"),
+                  dropdownMenuEntries: [
+                    DropdownMenuEntry(value: "Personal", label: "Personal"),
+                    DropdownMenuEntry(value: "gr2", label: "Group1"),
+                    DropdownMenuEntry(value: "gr3", label: "Group2"),
+                  ],
+                  onSelected: (ValueNotifier) {
+                    setState(() {
+                      group = ValueNotifier.toString();
+                    });
+                  },
+                ),
+              ],
+            ),
+            ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
+          ],
+        ),
       ),
     );
   }
