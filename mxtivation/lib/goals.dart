@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 
 final List<StreakItem> streakItems = [
-  StreakItem("Streak 1", 12, 30, true),
-  StreakItem("Streak 2", 0, 4, false),
+  StreakItem("Streak 1", 12, 30, true, "Group 1"),
+  StreakItem("Streak 2", 0, 4, false, "PePe"),
 ];
 
 class AddGoals extends StatefulWidget {
@@ -51,7 +51,7 @@ class _AddGoalsState extends State<AddGoals> {
 
   void _onPressed() {
     setState(() {
-      streakItems.add(new StreakItem(goalName, 0, 0, isSolo));
+      streakItems.add(new StreakItem(goalName, 0, 0, isSolo, "Name"));
       print(streakItems.length);
     });
 
