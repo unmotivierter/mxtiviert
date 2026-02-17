@@ -16,7 +16,10 @@ class _AppState extends State<App> {
   TabItems currentTab = TabItems.home;
   int currentinx = 0;
   int selectinx = 0;
-  final List<StreakItem> streakItems = [StreakItem("Streak 1", 12, 30, true), StreakItem("Streak 2", 0, 4, false)];
+  final List<StreakItem> streakItems = [
+    StreakItem("Streak 1", 12, 30, true),
+    StreakItem("Streak 2", 0, 4, false),
+  ];
 
   void selectTab(int i) {
     setState(() {
@@ -32,39 +35,58 @@ class _AppState extends State<App> {
       body: _buildBody(context),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: "Groups"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group),
+            label: "Groups",
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: "Calendar",
+            backgroundColor: Theme.of(context).colorScheme.surface,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",
+            backgroundColor: Theme.of(context).colorScheme.surface,
           ),
         ],
         currentIndex: selectinx,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.black,
+        selectedItemColor: Theme.of(context).colorScheme.primaryContainer,
+        unselectedItemColor: Theme.of(context).colorScheme.primary,
+
+        //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         onTap: selectTab,
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
+    Widget selectedWidget;
     switch (currentTab) {
       case TabItems.home:
-        return StreakScroller(streakItems: streakItems);
+        selectedWidget = StreakScroller(streakItems: streakItems);
 
       case TabItems.group:
-        return Text("The group screen");
+        selectedWidget = Text("The group screen");
 
       case TabItems.calendar:
-        return Text("Hi");
+        selectedWidget = Text("Hi");
 
       case TabItems.settings:
-        return Text("Settings");
+        selectedWidget = Text("Settings");
     }
+
+    return Container(
+      child: selectedWidget,
+      //color: Theme.of(context).colorScheme.surfaceDim,
+      color: Theme.of(context).colorScheme.outlineVariant,
+    );
   }
 
   Widget _buildAppBar(BuildContext context) {
@@ -84,6 +106,18 @@ class _AppState extends State<App> {
         break;
     }
 
-    return Text(title);
+    return Container(
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+        ),
+      ),
+      width: MediaQuery.of(context).size.width,
+
+      //color: Theme.of(context).colorScheme.inversePrimary,
+    );
   }
 }
