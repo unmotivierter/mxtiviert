@@ -50,9 +50,22 @@ class StreakScrollerItem extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: Theme.of(context).colorScheme.primaryContainer,
               ),
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Padding(
+                  padding: EdgeInsetsGeometry.all(8),
+                  child: Row(
+                    children: [
+                      Text("${streakItem.streakCount}", style: TextStyle(
+                        fontSize: 50,
+                      )),
+                      Icon(Icons.local_fire_department, size: 50),
+                    ],
+                  )
+                ),
+              ),
             ),
           ),
-          Text("${streakItem.streakCount}"),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Align(
