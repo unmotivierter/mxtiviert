@@ -83,9 +83,9 @@ class _AppState extends State<App> {
     }
 
     return Container(
-      child: selectedWidget,
       //color: Theme.of(context).colorScheme.surfaceDim,
       color: Theme.of(context).colorScheme.outlineVariant,
+      child: selectedWidget,
     );
   }
 

@@ -3,7 +3,6 @@ import 'main.dart';
 
 final int streakItemHeight = 150;
 
-
 class StreakScroller extends StatelessWidget {
   const StreakScroller({super.key, required this.streakItems});
 
@@ -12,19 +11,24 @@ class StreakScroller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CarouselView(
+      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
       itemExtent: streakItemHeight.toDouble(),
       scrollDirection: Axis.vertical,
       children: [
-        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[0],),
-        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[1],),
+        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[0]),
+        StreakScrollerItem(paddingSize: 10, streakItem: streakItems[1]),
       ],
     );
   }
 }
 
 class StreakScrollerItem extends StatelessWidget {
-  const StreakScrollerItem({super.key, required this.paddingSize, required this.streakItem});
-  final int paddingSize; 
+  const StreakScrollerItem({
+    super.key,
+    required this.paddingSize,
+    required this.streakItem,
+  });
+  final int paddingSize;
   final StreakItem streakItem;
 
   @override
@@ -39,7 +43,7 @@ class StreakScrollerItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: Theme.of(context).colorScheme.secondaryContainer,
-            )
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(15),
@@ -57,11 +61,13 @@ class StreakScrollerItem extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Text(streakItem.title, style: TextStyle(
+              child: Text(
+                streakItem.title,
+                style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 25,
                 ),
-              )
+              ),
             ),
           ),
         ],
