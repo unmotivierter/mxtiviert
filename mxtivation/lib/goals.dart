@@ -57,6 +57,7 @@ class _AddGoalsState extends State<AddGoals> {
                   onChanged: (bool? value) {
                     setState(() {
                       isSolo = value!;
+                      group = "Personal";
                     });
                   },
                 ),
