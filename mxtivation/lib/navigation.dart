@@ -4,11 +4,16 @@ import 'homescreen.dart';
 import 'main.dart';
 import 'goals.dart';
 
+typedef CompareFunction = int Function(dynamic a, dynamic b);
+
 enum TabItems { home, group, add, calendar, settings }
+enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
 
 TabItems currentTab = TabItems.home;
 
 List<StreakItem> streakItems = AddGoals().getStreakList();
+
+CompareFunction curCompFunc = (a, b) => 0;
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -16,6 +21,8 @@ class App extends StatefulWidget {
   @override
   State<App> createState() => _AppState();
 }
+
+Sortby selected = Sortby.sDesc;
 
 class _AppState extends State<App> {
   int currentinx = 0;
@@ -39,10 +46,53 @@ class _AppState extends State<App> {
     });
   }
 
+  int sortStreakDescending(dynamic a, dynamic b) => b.streakCount.compareTo(a.streakCount);
+  int sortStreakAscending(dynamic a, dynamic b) => a.streakCount.compareTo(b.streakCount);
+  int sortStreakPbDescending(dynamic a, dynamic b) => b.streakPbCount.compareTo(a.streakPbCount);
+  int sortStreakPbAscending(dynamic a, dynamic b) => a.streakPbCount.compareTo(b.streakPbCount);
+  int sortNameAscending(dynamic a, dynamic b) => a.title.compareTo(b.title);
+  int sortNameDescending(dynamic a, dynamic b) => b.title.compareTo(a.title);
+  //add sort by time left
+
+  void setCompFunc(Sortby sort){
+    setState(() {
+      switch(sort){
+        case Sortby.sDesc: curCompFunc = sortStreakDescending; break;
+        case Sortby.sAsc: curCompFunc = sortStreakAscending; break;
+        case Sortby.sPbDesc: curCompFunc = sortStreakPbDescending; break;
+        case Sortby.sPbAsc: curCompFunc = sortStreakPbAscending; break;
+        case Sortby.nDesc: curCompFunc = sortNameDescending; break;
+        case Sortby.nAsc: curCompFunc = sortNameAscending; break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: _buildAppBar(context)),
+      appBar: AppBar(
+        title: _buildAppBar(context),
+        actions: [Align(
+          alignment: Alignment.centerRight,
+          child: DropdownButton(
+            value: selected,
+            items: [
+              DropdownMenuItem(value: Sortby.sDesc, child: Text("Streak ↓")),
+              DropdownMenuItem(value: Sortby.sAsc, child: Text("Streak ↑")),
+              DropdownMenuItem(value: Sortby.sPbDesc, child: Text("Streak PB ↓")),
+              DropdownMenuItem(value: Sortby.sPbAsc, child: Text("Streak PB ↑")),
+              DropdownMenuItem(value: Sortby.nDesc, child: Text("Name ↓")),
+              DropdownMenuItem(value: Sortby.nAsc, child: Text("Name ↑")),
+            ],
+            onChanged: (sort) {
+              setState(() {
+                selected = sort!;
+                setCompFunc(sort);
+              });
+            },
+          ),
+          ),],
+        ),
       body: _buildBody(context),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -128,15 +178,14 @@ Widget _buildAppBar(BuildContext context) {
       title = "Add Goal";
   }
 
-  return Container(
+  return SizedBox(
+    width: MediaQuery.of(context).size.width,
     child: Center(
       child: Text(
         title,
         style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
       ),
     ),
-    width: MediaQuery.of(context).size.width,
-
     //color: Theme.of(context).colorScheme.inversePrimary,
   );
 }

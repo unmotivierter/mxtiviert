@@ -25,9 +25,9 @@ class MainApp extends StatelessWidget {
 class StreakItem {
   String title;
   int streakCount;
-  int streakCountPb;
+  int streakPbCount;
   bool solo;
   String goaler; //name of person/group who have goal :)
   //add time left and time interval
-  StreakItem(this.title, this.streakCount, this.streakCountPb, this.solo, this.goaler);
+  StreakItem(this.title, this.streakCount, this.streakPbCount, this.solo, this.goaler);
 }
