@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
       theme: FlexThemeData.light(scheme: FlexScheme.flutterDash),
       darkTheme: FlexThemeData.dark(scheme: FlexScheme.flutterDash),
       //themeMode: ThemeMode.system,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: App(),
     );
   }
