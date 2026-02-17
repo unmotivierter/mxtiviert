@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'navigation.dart';
 import 'homescreen.dart';
 
 void main() {
@@ -19,9 +20,7 @@ class MainApp extends StatelessWidget {
       darkTheme: FlexThemeData.dark(scheme: FlexScheme.flutterDash),
       //themeMode: ThemeMode.system,
       themeMode: ThemeMode.light,
-      home: Scaffold(
-        body: StreakScroller(streakItems: streakItems),
-      ),
+      home: App(),
     );
   }
 }

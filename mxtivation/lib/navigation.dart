@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mxtivation/homescreen.dart';
+
+import 'homescreen.dart';
+import 'main.dart';
 
 enum TabItems { home, group, calendar, settings }
 
@@ -14,13 +16,12 @@ class _AppState extends State<App> {
   TabItems currentTab = TabItems.home;
   int currentinx = 0;
   int selectinx = 0;
+  final List<StreakItem> streakItems = [StreakItem("Streak 1", 12, 30, true), StreakItem("Streak 2", 0, 4, false)];
 
   void selectTab(int i) {
     setState(() {
       currentTab = TabItems.values[i];
-      print(currentTab);
       selectinx = i;
-      print(selectinx);
     });
   }
 
@@ -53,7 +54,7 @@ class _AppState extends State<App> {
   Widget _buildBody(BuildContext context) {
     switch (currentTab) {
       case TabItems.home:
-        return Text("Home");
+        return StreakScroller(streakItems: streakItems);
 
       case TabItems.group:
         return Text("The group screen");
