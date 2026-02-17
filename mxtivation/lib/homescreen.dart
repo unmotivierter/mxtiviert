@@ -16,6 +16,15 @@ class _StreakScrollerState extends State<StreakScroller> {
 
   bool tapped = false;
 
+  List<Widget> createScrollerItemsFromList(List<StreakItem> streakItems){
+    streakItems.sort((a, b) => b.streakCount.compareTo(a.streakCount));
+    List<Widget> items = [];
+    for(StreakItem si in streakItems){
+      items.add(StreakScrollerItem(paddingSize: 10, streakItem: si));
+    }
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return CarouselView(
@@ -23,12 +32,9 @@ class _StreakScrollerState extends State<StreakScroller> {
       itemExtent: streakItemHeight.toDouble(),
       scrollDirection: Axis.vertical,
       onTap: (int i) {
-        debugPrint("$i");
+        //wip
       },
-      children: [
-        StreakScrollerItem(paddingSize: 10, streakItem: widget.streakItems[0]),
-        StreakScrollerItem(paddingSize: 10, streakItem: widget.streakItems[1]),
-      ],
+      children: createScrollerItemsFromList(widget.streakItems),
     );
   }
 }
