@@ -20,6 +20,8 @@ class AddGoals extends StatefulWidget {
 
 class _AddGoalsState extends State<AddGoals> {
   String goalName = "empty string";
+  String group = "Personal";
+
   bool isSolo = true;
 
   @override
@@ -58,6 +60,25 @@ class _AddGoalsState extends State<AddGoals> {
               ),
             ],
           ),
+
+          Row(
+            children: [
+              Text("Select your group", style: TextStyle(fontSize: 20)),
+              DropdownMenu(
+                label: Text("Group"),
+                dropdownMenuEntries: [
+                  DropdownMenuEntry(value: "gr1", label: "none"),
+                  DropdownMenuEntry(value: "gr2", label: "Group1"),
+                  DropdownMenuEntry(value: "gr3", label: "Group2"),
+                ],
+                onSelected: (ValueNotifier) {
+                  setState(() {
+                    group = ValueNotifier.toString();
+                  });
+                },
+              ),
+            ],
+          ),
           ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
         ],
       ),
@@ -66,7 +87,7 @@ class _AddGoalsState extends State<AddGoals> {
 
   void _onPressed() {
     setState(() {
-      streakItems.add(new StreakItem(goalName, 0, 0, isSolo, "Name"));
+      streakItems.add(new StreakItem(goalName, 0, 0, isSolo, group));
       Navigator.pop(context);
 
       print(streakItems.length);
