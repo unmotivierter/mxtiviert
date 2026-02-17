@@ -65,9 +65,11 @@ class _AddGoalsState extends State<AddGoals> {
             children: [
               Text("Select your group", style: TextStyle(fontSize: 20)),
               DropdownMenu(
-                label: Text("Group"),
+                enabled: !isSolo,
+
+                label: Text("Personal"),
                 dropdownMenuEntries: [
-                  DropdownMenuEntry(value: "gr1", label: "none"),
+                  DropdownMenuEntry(value: "Personal", label: "Personal"),
                   DropdownMenuEntry(value: "gr2", label: "Group1"),
                   DropdownMenuEntry(value: "gr3", label: "Group2"),
                 ],
