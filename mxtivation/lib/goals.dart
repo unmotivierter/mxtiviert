@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mxtivation/navigation.dart';
 import 'main.dart';
 
 final List<StreakItem> streakItems = [
@@ -66,10 +67,12 @@ class _AddGoalsState extends State<AddGoals> {
   void _onPressed() {
     setState(() {
       streakItems.add(new StreakItem(goalName, 0, 0, isSolo, "Name"));
+      Navigator.pop(context);
+
       print(streakItems.length);
     });
 
-    Navigator.pop(context);
+    //Navigator.pop(context);
   }
 
   void _onChanged(String txt) {
