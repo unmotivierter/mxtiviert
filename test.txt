@@ -1,13 +1,3 @@
-Hallo dies ist ein Test.
-HAllo dies ist kein Test.
-Bonjour, no a teste.
-GG = GreatGit
-
-
-
-
-
-Hallo ich bin abgerutscht
-
-
-hmmmm
+Colorscheme:
+  https://raw.githubusercontent.com/rydmike/flex_color_scheme_docs/master/docs/images/fcs-v5-d-37.png
+  (replace -d-37 with -l-37 in link for light mode variant)
