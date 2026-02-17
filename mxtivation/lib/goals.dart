@@ -24,15 +24,29 @@ class _AddGoalsState extends State<AddGoals> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
+      appBar: AppBar(
+        title: Text(
+          "Create a new Goal",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+        ),
+      ),
       body: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(hint: Text("Enter your Goal Name: ")),
+            decoration: InputDecoration(
+              hint: Text(
+                "Enter your Goal Name: ",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
             onChanged: _onChanged,
           ),
           Row(
             children: [
-              Text("Is this a solo project?"),
+              Text("Is this a solo project?", style: TextStyle(fontSize: 20)),
               Checkbox(
                 value: isSolo,
                 onChanged: (bool? value) {
