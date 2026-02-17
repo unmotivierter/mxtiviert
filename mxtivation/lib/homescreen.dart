@@ -62,8 +62,9 @@ class StreakScrollerItem extends StatelessWidget {
                     children: [
                       Text("${streakItem.streakCount}", style: TextStyle(
                         fontSize: 50,
+                        color: Colors.orange.shade800,
                       )),
-                      Icon(Icons.local_fire_department, size: 50),
+                      Icon(Icons.local_fire_department, size: 50, color: Colors.deepOrange,),
                     ],
                   )
                 ),
