@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 
+typedef CompareFunction = int Function(dynamic a, dynamic b);
+
+
 final int streakItemHeight = 150;
 
 class StreakScroller extends StatefulWidget {
@@ -16,8 +19,18 @@ class _StreakScrollerState extends State<StreakScroller> {
 
   bool tapped = false;
 
+  int sortStreakDescending(dynamic a, dynamic b) => b.streakCount.compareTo(a.streakCount);
+  int sortStreakAscending(dynamic a, dynamic b) => a.streakCount.compareTo(b.streakCount);
+  int sortStreakPbDescending(dynamic a, dynamic b) => b.streakPbCount.compareTo(a.streakPbCount);
+  int sortStreakPbAscending(dynamic a, dynamic b) => a.streakPbCount.compareTo(b.streakPbCount);
+  int sortNameAscending(dynamic a, dynamic b) => a.title.compareTo(b.title);
+  int sortNameDescending(dynamic a, dynamic b) => b.title.compareTo(a.title);
+  //add sort by time left
+
+  late CompareFunction currentSort = sortStreakDescending;
+
   List<Widget> createScrollerItemsFromList(List<StreakItem> streakItems){
-    streakItems.sort((a, b) => b.streakCount.compareTo(a.streakCount));
+    streakItems.sort(sortNameDescending);
     List<Widget> items = [];
     for(StreakItem si in streakItems){
       items.add(StreakScrollerItem(paddingSize: 10, streakItem: si));
