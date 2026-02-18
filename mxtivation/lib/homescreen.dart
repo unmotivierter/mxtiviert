@@ -20,18 +20,30 @@ class StreakScroller extends StatefulWidget {
 
 class _StreakScrollerState extends State<StreakScroller> {
   bool tapped = false;
+  VoidCallback myCallback = () {};
 
   List<Widget> createScrollerItemsFromList(List<StreakItem> streakItems) {
     streakItems.sort(curCompFunc);
     List<Widget> items = [];
     for (StreakItem si in streakItems) {
-      items.add(StreakScrollerItem(paddingSize: 10, streakItem: si));
+      items.add(
+        StreakScrollerItem(
+          paddingSize: 10,
+          streakItem: si,
+          idx: streakItems.indexOf(si),
+          callback: myCallback,
+        ),
+      );
     }
     return items;
   }
 
   @override
   Widget build(BuildContext context) {
+    myCallback = () {
+      setState(() {});
+    };
+    setState(() {});
     return CarouselView(
       backgroundColor: Theme.of(context).colorScheme.outlineVariant,
       itemExtent: streakItemHeight.toDouble(),
@@ -39,7 +51,9 @@ class _StreakScrollerState extends State<StreakScroller> {
       onTap: (int i) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => StreakScreenSp(streakItem: streakItems[i],)),
+          MaterialPageRoute(
+            builder: (context) => StreakScreenSp(streakItem: streakItems[i]),
+          ),
         );
       },
       children: createScrollerItemsFromList(widget.streakItems),
@@ -52,9 +66,13 @@ class StreakScrollerItem extends StatelessWidget {
     super.key,
     required this.paddingSize,
     required this.streakItem,
+    required this.idx,
+    required this.callback,
   });
   final int paddingSize;
   final StreakItem streakItem;
+  final int idx;
+  final VoidCallback callback;
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +142,10 @@ class StreakScrollerItem extends StatelessWidget {
           Positioned(
             left: 150,
             top: 50,
-            child: const TimerWidget(
-              dura: Duration(hours: 1, minutes: 5, seconds: 3),
+            child: TimerWidget(
+              dura: streakItem.duration,
+              itemIndex: idx,
+              callback: callback,
             ),
           ),
           Align(
@@ -158,9 +178,16 @@ class StreakScrollerItem extends StatelessWidget {
 }
 
 class TimerWidget extends StatefulWidget {
-  const TimerWidget({super.key, required this.dura});
+  TimerWidget({
+    super.key,
+    required this.dura,
+    required this.itemIndex,
+    required this.callback,
+  });
 
   final dura;
+  final int itemIndex;
+  final VoidCallback callback;
   Duration getDura() {
     return dura;
   }
@@ -192,8 +219,8 @@ class _TimerWidgetState extends State<TimerWidget> {
     setState(() {
       int seconds = durationNotifier.value.inSeconds - 1;
       if (seconds < 0) {
-        timer?.cancel();
         onTimeout();
+        timer?.cancel();
       } else {
         durationNotifier.value = Duration(seconds: seconds);
         dur = Duration(seconds: seconds);
@@ -203,7 +230,12 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   void onTimeout() {
-    print("Timeout");
+    setState(() {
+      debugPrint("${widget.itemIndex}");
+      streakItems[widget.itemIndex].streakCount = 0;
+      widget.callback();
+      print("Timeout");
+    });
   }
 
   @override
