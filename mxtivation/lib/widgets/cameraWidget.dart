@@ -7,9 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
 class CameraWidget extends StatelessWidget {
-  const CameraWidget({super.key, required this.height, required this.width});
+  const CameraWidget({super.key, required this.height, required this.width, required this.streakName});
   final double height;
   final double width;
+  final String streakName;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class CameraWidget extends StatelessWidget {
           // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) => CameraScreen(camera: firstCamera),
+            builder: (context) => CameraScreen(camera: firstCamera, streakName: streakName,),
           ),
         );
       },
@@ -52,9 +53,10 @@ late List<CameraDescription> _cameras;
 /// CameraScreen is the Main Application.
 class CameraScreen extends StatefulWidget {
   /// Default Constructor
-  const CameraScreen({super.key, required this.camera});
+  const CameraScreen({super.key, required this.camera, required this.streakName});
 
   final CameraDescription camera;
+  final streakName;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -82,16 +84,29 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.done){
-            return CameraPreview(_controller);
-          }
-          else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      body: Stack(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if(snapshot.connectionState == ConnectionState.done){
+                return CameraPreview(_controller);
+              }
+              else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          Positioned(
+            top: 40,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.cancel),
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -99,7 +114,7 @@ class _CameraScreenState extends State<CameraScreen> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
             if(!context.mounted) return;
-            final String newPath = await saveImageToAppFolder(image.path); 
+            final String newPath = await saveImageToAppFolder(image.path, widget.streakName); 
 
             // ignore: use_build_context_synchronously
             await Navigator.of(context).push(
@@ -138,18 +153,37 @@ class DisplayPictureScreen extends StatelessWidget {
   }
 }
 
-Future<String> saveImageToAppFolder(String oldPath) async {
+Future<String> saveImageToAppFolder(String oldPath, String streakName) async {
   final directory = await getApplicationDocumentsDirectory();
-  final fileName = path.basename(oldPath);
   final tempDir = Directory(path.join(directory.path, 'images'));
   if (!await tempDir.exists()) {
     await tempDir.create(recursive: true);
   }
-  final newPath = path.join(tempDir.path, fileName);
+  final newPath = await streakToFileName(tempDir.path, streakName);
 
   final File imageFile = File(oldPath);
   final File newFile = await imageFile.copy(newPath);
 
-  debugPrint("Saved to: ${newFile.path}");
   return newFile.path;
+}
+
+Future<String> streakToFileName(String dirPath, String streakName) async {
+  streakName = streakName.replaceAll(' ', '_');
+  final directory = Directory(dirPath);
+  final files = directory.listSync();
+
+  int maxNum = 0;
+  
+  for(var file in files){
+    final name = file.uri.pathSegments.last;
+    final regex = RegExp(r'^'+ streakName + r'_(\d+)\.png$');
+    final match = regex.firstMatch(name);
+    if(match != null){
+      final number = int.tryParse(match.group(1)!);
+      if(number != null && number > maxNum){
+        maxNum = number;
+      }
+    }
+  }
+  return '$dirPath/$streakName\_${maxNum+1}.png';
 }
