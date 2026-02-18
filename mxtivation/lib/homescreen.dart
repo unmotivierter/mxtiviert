@@ -6,12 +6,12 @@ import 'main.dart';
 import 'navigation.dart';
 import 'streak_sp.dart';
 
-
 class StreakScroller extends StatefulWidget {
   const StreakScroller({super.key, required this.streakItems});
 
   final List<StreakItem> streakItems;
-  final int streakItemHeight = 150;  //if you change this update the same on down below in StreakScrollerItem as well thank you
+  final int streakItemHeight =
+      150; //if you change this update the same on down below in StreakScrollerItem as well thank you
 
   @override
   State<StreakScroller> createState() => _StreakScrollerState();
@@ -261,7 +261,8 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   Widget buildTime(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(duration.inHours);
+    final days = twoDigits(duration.inDays);
+    final hours = twoDigits(duration.inHours.remainder(24));
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
@@ -270,10 +271,15 @@ class _TimerWidgetState extends State<TimerWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Time left: ", style: TextStyle(fontSize: 20)),
-          Text("$hours", style: TextStyle(fontSize: 20)),
-          Text(": $minutes", style: TextStyle(fontSize: 20)),
-          Text(": $seconds", style: TextStyle(fontSize: 20)),
+          (duration.inDays > 0)
+              ? Text(
+                  "Time left: $days:$hours:$minutes:$seconds",
+                  style: TextStyle(fontSize: 20),
+                )
+              : Text(
+                  "Time left: $hours:$minutes:$seconds",
+                  style: TextStyle(fontSize: 20),
+                ),
         ],
       ),
     );
