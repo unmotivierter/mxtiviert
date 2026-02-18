@@ -153,6 +153,13 @@ class StreakScrollerItem extends StatelessWidget {
               callback: callback,
             ),
           ),
+          Positioned(
+            left: 150,
+            top: 75,
+            child: Text(
+              "Actions left: ${context.watch<Globals>().streakItems[idx].amountPerIntervall}",
+            ),
+          ),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -205,6 +212,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   //_TimerWidgetState({required this.dur});
   //var duration = 0;
   late Duration dur = widget.dura;
+
   //static Duration dur = Duration(minutes: 1, seconds: 9);
   late ValueNotifier<Duration> durationNotifier = ValueNotifier<Duration>(dur);
   Timer? timer;
@@ -223,6 +231,7 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   void startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (_) => reduceTime());
+    //durationNotifier = ValueNotifier<Duration>(dur);
   }
 
   void reduceTime() {
@@ -233,6 +242,7 @@ class _TimerWidgetState extends State<TimerWidget> {
         onTimeout();
         //timer?.cancel();
       } else {
+        debugPrint("${context.read<Globals>().streakItems[1].duration}");
         durationNotifier.value = Duration(seconds: seconds);
         dur = Duration(seconds: seconds);
         context.read<Globals>().streakItems[widget.itemIndex].duration = dur;
@@ -242,7 +252,13 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   void onTimeout() {
+    debugPrint("${durationNotifier.value.inSeconds}");
     context.read<Globals>().streakItems[widget.itemIndex].streakCount = 0;
+    context.read<Globals>().resetDuration(widget.itemIndex);
+    dur = context.read<Globals>().streakItems[widget.itemIndex].duration;
+    durationNotifier = ValueNotifier<Duration>(dur);
+    timer?.cancel();
+    startTimer();
     widget.callback();
   }
 

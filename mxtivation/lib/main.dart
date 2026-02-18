@@ -5,13 +5,13 @@ import 'navigation.dart';
 import 'comparefunctions.dart';
 
 enum TabItems { home, group, add, calendar, settings }
-enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
+
+enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc }
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (context) => Globals(),
-      child: MainApp())
-    );
+  runApp(
+    ChangeNotifierProvider(create: (context) => Globals(), child: MainApp()),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -38,6 +38,8 @@ class StreakItem {
   bool solo;
   String goaler; //name of person/group who have goal :)
   Duration duration;
+  Duration intervall;
+  int amountPerIntervall;
   //add time left and time interval
   StreakItem(
     this.title,
@@ -47,41 +49,77 @@ class StreakItem {
     this.solo,
     this.goaler,
     this.duration,
+    this.intervall,
+    this.amountPerIntervall,
   );
 }
 
-
-class Globals extends ChangeNotifier{
+class Globals extends ChangeNotifier {
   TabItems currentTab = TabItems.home;
-  
+
   int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;
 
-
   List<StreakItem> streakItems = [
-    StreakItem("Streak 1", 12, 30, 4, true, "Group 1", Duration(hours: 2)),
-    StreakItem("Streak 2", 1, 14, 0, false, "PePe", Duration(seconds: 10)),
+    StreakItem(
+      "Streak 1",
+      12,
+      30,
+      4,
+      true,
+      "Group 1",
+      Duration(hours: 2),
+      Duration(hours: 2),
+      1,
+    ),
+    StreakItem(
+      "Streak 2",
+      1,
+      14,
+      0,
+      false,
+      "PePe",
+      Duration(seconds: 10),
+      Duration(seconds: 10),
+      2,
+    ),
   ];
-
 
   void selectTab(int i) {
     currentTab = TabItems.values[i];
     notifyListeners();
   }
 
-  void setCompFunc(Sortby sort){
-    switch(sort){
-      case Sortby.sDesc: compareFunc = sortStreakDescending; break;
-      case Sortby.sAsc: compareFunc = sortStreakAscending; break;
-      case Sortby.sPbDesc: compareFunc = sortStreakPbDescending; break;
-      case Sortby.sPbAsc: compareFunc = sortStreakPbAscending; break;
-      case Sortby.nDesc: compareFunc = sortNameDescending; break;
-      case Sortby.nAsc: compareFunc = sortNameAscending; break;
+  void setCompFunc(Sortby sort) {
+    switch (sort) {
+      case Sortby.sDesc:
+        compareFunc = sortStreakDescending;
+        break;
+      case Sortby.sAsc:
+        compareFunc = sortStreakAscending;
+        break;
+      case Sortby.sPbDesc:
+        compareFunc = sortStreakPbDescending;
+        break;
+      case Sortby.sPbAsc:
+        compareFunc = sortStreakPbAscending;
+        break;
+      case Sortby.nDesc:
+        compareFunc = sortNameDescending;
+        break;
+      case Sortby.nAsc:
+        compareFunc = sortNameAscending;
+        break;
     }
     notifyListeners();
   }
 
-  void addStreakItem(StreakItem item){
+  void addStreakItem(StreakItem item) {
     streakItems.add(item);
+    notifyListeners();
+  }
+
+  void resetDuration(int idx) {
+    streakItems[idx].duration = streakItems[idx].intervall;
     notifyListeners();
   }
 }

@@ -95,7 +95,7 @@ class _AddGoalsState extends State<AddGoals> {
                     int dayController = 1;
                     int hourController = 0;
                     int minuteController = 0;
-                    int amt = 0;
+                    int amt = 1;
 
                     return StatefulBuilder(
                       builder: (context, setStateSheet) => Scaffold(
@@ -202,7 +202,9 @@ class _AddGoalsState extends State<AddGoals> {
         0,
         isSolo,
         group,
-        Duration(hours: 1, minutes: 5, seconds: 1),
+        Duration(hours: hours, days: days, minutes: minutes),
+        Duration(hours: hours, days: days, minutes: minutes),
+        amount,
       ),
     );
     Navigator.pop(context);
