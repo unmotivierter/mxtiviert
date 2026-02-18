@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +12,9 @@ enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc }
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ChangeNotifierProvider(
-      create: (context) => Globals(),
-      child: MainApp())
-    );
+  runApp(
+    ChangeNotifierProvider(create: (context) => Globals(), child: MainApp()),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -120,8 +121,39 @@ class Globals extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetDuration(int idx) {
+  ///////Timer logic here:
+
+  Map<int, Timer> _timers = {};
+
+  void startTimer(int idx) {
+    _timers[idx]?.cancel();
+
+    _timers[idx] = Timer.periodic(Duration(seconds: 1), (_) => reduceTime(idx));
+
+    notifyListeners();
+  }
+
+  void reduceTime(int idx) {
+    final currentDuration = streakItems[idx].duration;
+    final seconds = currentDuration.inSeconds - 1;
+
+    if (seconds <= 0) {
+      onTimeout(idx);
+      return;
+    }
+
+    streakItems[idx].duration = Duration(seconds: seconds);
+
+    notifyListeners();
+  }
+
+  void onTimeout(int idx) {
+    streakItems[idx].streakCount = 0;
+
     streakItems[idx].duration = streakItems[idx].intervall;
+
+    _timers[idx]?.cancel();
+    startTimer(idx);
     notifyListeners();
   }
 }
