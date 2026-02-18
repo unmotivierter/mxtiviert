@@ -7,8 +7,6 @@ import 'goals.dart';
 
 typedef CompareFunction = int Function(dynamic a, dynamic b);
 
-List<StreakItem> streakItems = AddGoals().getStreakList();
-
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -137,7 +135,7 @@ class _AppState extends State<App> {
     Widget selectedWidget;
     switch (context.watch<Globals>().currentTab) {
       case TabItems.home:
-        selectedWidget = StreakScroller(streakItems: streakItems);
+        selectedWidget = StreakScroller(streakItems: context.read<Globals>().streakItems);
 
       case TabItems.group:
         selectedWidget = Text("The group screen");
@@ -148,7 +146,7 @@ class _AppState extends State<App> {
       case TabItems.settings:
         selectedWidget = Text("Settings");
       case TabItems.add:
-        selectedWidget = StreakScroller(streakItems: streakItems);
+        selectedWidget = StreakScroller(streakItems: context.read<Globals>().streakItems);
     }
 
     return Container(
@@ -187,7 +185,6 @@ Widget _buildAppBar(BuildContext context) {
         style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
       ),
     ),
-    //color: Theme.of(context).colorScheme.inversePrimary,
   );
 }
 

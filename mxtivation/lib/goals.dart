@@ -1,40 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mxtivation/navigation.dart';
+import 'package:provider/provider.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 import 'main.dart';
 
-final List<StreakItem> streakItems = [
-  StreakItem(
-    "Streak 1",
-    12,
-    30,
-    4,
-    true,
-    "Group 1",
-    Duration(hours: 2),
-    Duration(hours: 2),
-    3,
-  ),
-  StreakItem(
-    "Streak 2",
-    1,
-    14,
-    0,
-    false,
-    "PePe",
-    Duration(seconds: 10),
-    Duration(seconds: 10),
-    3,
-  ),
-];
-
 class AddGoals extends StatefulWidget {
   const AddGoals({super.key});
-
-  List<StreakItem> getStreakList() {
-    return streakItems;
-  }
 
   @override
   State<AddGoals> createState() => _AddGoalsState();
@@ -222,35 +194,23 @@ class _AddGoalsState extends State<AddGoals> {
   }
 
   void _onPressed() {
-    setState(() {
-      streakItems.add(
-        new StreakItem(
-          goalName,
-          0,
-          0,
-          0,
-          isSolo,
-          group,
-          Duration(days: days, hours: hours, minutes: minutes, seconds: 0),
-          Duration(days: days, hours: hours, minutes: minutes, seconds: 0),
-          amount,
-        ),
-      );
-      Navigator.pop(context);
-
-      print(streakItems.length);
-    });
-
-    //Navigator.pop(context);
+    Provider.of<Globals>(context, listen: false).addStreakItem(
+      StreakItem(
+        goalName,
+        0,
+        0,
+        0,
+        isSolo,
+        group,
+        Duration(hours: 1, minutes: 5, seconds: 1),
+      ),
+    );
+    Navigator.pop(context);
   }
 
   void _onChanged(String txt) {
     setState(() {
       goalName = txt;
     });
-  }
-
-  List<StreakItem> getStreakList() {
-    return streakItems;
   }
 }
