@@ -85,12 +85,15 @@ class StreakScrollerItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Stack(
         children: [
-          Container(
-            width: MediaQuery.sizeOf(context).width - paddingSize,
-            height: streakItemHeight.toDouble(),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Theme.of(context).colorScheme.secondaryContainer,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: paddingSize/2),
+            child: Container(
+              //width: MediaQuery.sizeOf(context).width - paddingSize,
+              height: streakItemHeight.toDouble(),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Theme.of(context).colorScheme.secondaryContainer,
+              ),
             ),
           ),
           Padding(
