@@ -57,11 +57,17 @@ class Globals extends ChangeNotifier{
   int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;
 
 
+  List<StreakItem> streakItems = [
+    StreakItem("Streak 1", 12, 30, 4, true, "Group 1", Duration(hours: 2)),
+    StreakItem("Streak 2", 1, 14, 0, false, "PePe", Duration(seconds: 10)),
+  ];
+
 
   void selectTab(int i) {
     currentTab = TabItems.values[i];
     notifyListeners();
   }
+
   void setCompFunc(Sortby sort){
     switch(sort){
       case Sortby.sDesc: compareFunc = sortStreakDescending; break;
@@ -71,6 +77,11 @@ class Globals extends ChangeNotifier{
       case Sortby.nDesc: compareFunc = sortNameDescending; break;
       case Sortby.nAsc: compareFunc = sortNameAscending; break;
     }
+    notifyListeners();
+  }
+
+  void addStreakItem(StreakItem item){
+    streakItems.add(item);
     notifyListeners();
   }
 }

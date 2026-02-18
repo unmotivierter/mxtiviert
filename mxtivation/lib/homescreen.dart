@@ -54,7 +54,7 @@ class _StreakScrollerState extends State<StreakScroller> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StreakScreenSp(streakItem: streakItems[i]),
+            builder: (context) => StreakScreenSp(streakItem: context.watch<Globals>().streakItems[i]),
           ),
         );
       },
@@ -146,7 +146,7 @@ class StreakScrollerItem extends StatelessWidget {
             left: 150,
             top: 50,
             child: TimerWidget(
-              dura: streakItems[idx].duration,
+              dura: context.watch<Globals>().streakItems[idx].duration,
               itemIndex: idx,
               callback: callback,
             ),
@@ -234,19 +234,16 @@ class _TimerWidgetState extends State<TimerWidget> {
       } else {
         durationNotifier.value = Duration(seconds: seconds);
         dur = Duration(seconds: seconds);
-        streakItems[widget.itemIndex].duration = dur;
+        context.read<Globals>().streakItems[widget.itemIndex].duration = dur;
       }
       //print(durationNotifier.value.inSeconds);
     });
   }
 
   void onTimeout() {
-    setState(() {
-      streakItems[widget.itemIndex].streakCount = 0;
-      widget.callback();
-      //print("Timeout");
-      terminated = true;
-    });
+    context.read<Globals>().streakItems[widget.itemIndex].streakCount = 0;
+    widget.callback();
+    terminated = true;
   }
 
   @override

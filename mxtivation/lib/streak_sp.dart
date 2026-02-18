@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mxtivation/main.dart';
+import 'package:mxtivation/widgets/cameraWidget.dart';
 import 'widgets/streakWidget.dart';
 
 class StreakScreenSp extends StatelessWidget {
@@ -26,7 +27,7 @@ class StreakScreenSp extends StatelessWidget {
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(height: wHeight, width: wWidth, color: Theme.of(context).colorScheme.errorContainer,),
+                child: CameraWidget(height: wHeight, width: wWidth,),
               ),
             ],
           ),
