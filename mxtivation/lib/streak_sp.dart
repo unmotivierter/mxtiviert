@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mxtivation/main.dart';
 import 'package:mxtivation/widgets/cameraWidget.dart';
 import 'widgets/streakWidget.dart';
+import 'widgets/photoGalleryPreviewWidget.dart';
 
 class StreakScreenSp extends StatelessWidget {
   const StreakScreenSp({super.key, required this.streakItem});
@@ -47,10 +48,10 @@ class StreakScreenSp extends StatelessWidget {
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: PhotoGalleryPreviewWidget(
                   height: wHeight,
                   width: wWidth,
-                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  streakName: streakItem.title,
                 ),
               ),
               //Placeholder

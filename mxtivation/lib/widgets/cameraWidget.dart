@@ -159,7 +159,7 @@ Future<String> saveImageToAppFolder(String oldPath, String streakName) async {
   if (!await tempDir.exists()) {
     await tempDir.create(recursive: true);
   }
-  final newPath = await streakToFileName(tempDir.path, streakName);
+  final newPath = await streakToFileName(tempDir.path, streakName, true);
 
   final File imageFile = File(oldPath);
   final File newFile = await imageFile.copy(newPath);
@@ -167,7 +167,7 @@ Future<String> saveImageToAppFolder(String oldPath, String streakName) async {
   return newFile.path;
 }
 
-Future<String> streakToFileName(String dirPath, String streakName) async {
+Future<String> streakToFileName(String dirPath, String streakName, bool increment) async {
   streakName = streakName.replaceAll(' ', '_');
   final directory = Directory(dirPath);
   final files = directory.listSync();
@@ -185,5 +185,5 @@ Future<String> streakToFileName(String dirPath, String streakName) async {
       }
     }
   }
-  return '$dirPath/$streakName\_${maxNum+1}.png';
+  return increment ? '$dirPath/$streakName\_${maxNum+1}.png' : '$dirPath/$streakName\_$maxNum.png';
 }
