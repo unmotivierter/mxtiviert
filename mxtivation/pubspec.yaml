@@ -12,8 +12,6 @@ dependencies:
   flex_color_scheme: ^8.4.0
   provider: 
   numberpicker: ^2.1.2
-
-  
   camera: 
 
 dev_dependencies:
