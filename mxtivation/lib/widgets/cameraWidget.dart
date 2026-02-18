@@ -20,12 +20,12 @@ class CameraWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: Theme.of(context).colorScheme.outline,
-          ),
-        child: Icon(Icons.photo_camera, size: 100,),
+        ),
+        child: Icon(Icons.photo_camera, size: 100),
       ),
       onTap: () async {
         WidgetsFlutterBinding.ensureInitialized();
-        _cameras = await availableCameras(); 
+        _cameras = await availableCameras();
         debugPrint("$_cameras");
         //might need to be changed to _cameras[0] on real devices
         final firstCamera = _cameras[1];
@@ -33,8 +33,8 @@ class CameraWidget extends StatelessWidget {
           // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) => CameraScreen(camera: firstCamera,),
-          )
+            builder: (context) => CameraScreen(camera: firstCamera),
+          ),
         );
       },
     );
@@ -65,25 +65,22 @@ class _CameraScreenState extends State<CameraScreen> {
   late Future<void> _initializeControllerFuture;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-      //controller is for current output of camera
-    _controller = CameraController(
-      widget.camera,
-      ResolutionPreset.medium,
-    );
+    //controller is for current output of camera
+    _controller = CameraController(widget.camera, ResolutionPreset.medium);
 
     _initializeControllerFuture = _controller.initialize();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
