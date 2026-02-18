@@ -9,11 +9,16 @@ class StreakScreenSp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double wHeight = MediaQuery.of(context).size.height/2.5;
-    final double wWidth = MediaQuery.of(context).size.width/2.5;
+    final double wHeight = MediaQuery.of(context).size.height / 2.5;
+    final double wWidth = MediaQuery.of(context).size.width / 2.5;
     return Scaffold(
       appBar: AppBar(
-        title: Text(streakItem.title, style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),),
+        title: Text(
+          streakItem.title,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -23,11 +28,15 @@ class StreakScreenSp extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 20,
             children: [
-              StreakDisplayWidget(streakItem: streakItem, height: wHeight, width: wWidth),
+              StreakDisplayWidget(
+                streakItem: streakItem,
+                height: wHeight,
+                width: wWidth,
+              ),
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CameraWidget(height: wHeight, width: wWidth,),
+                child: CameraWidget(height: wHeight, width: wWidth),
               ),
             ],
           ),
@@ -38,17 +47,25 @@ class StreakScreenSp extends StatelessWidget {
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(height: wHeight, width: wWidth, color: Theme.of(context).colorScheme.secondaryContainer,),
+                child: Container(
+                  height: wHeight,
+                  width: wWidth,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
               ),
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(height: wHeight, width: wWidth, color: Theme.of(context).colorScheme.tertiaryContainer),
+                child: Container(
+                  height: wHeight,
+                  width: wWidth,
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                ),
               ),
             ],
           ),
         ],
-      )
+      ),
     );
   }
 }
