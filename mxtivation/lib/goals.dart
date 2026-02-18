@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mxtivation/navigation.dart';
+import 'package:numberpicker/numberpicker.dart';
+
 import 'main.dart';
 
 final List<StreakItem> streakItems = [
@@ -21,6 +23,10 @@ class AddGoals extends StatefulWidget {
 class _AddGoalsState extends State<AddGoals> {
   String goalName = "empty string";
   String group = "Personal";
+  Duration duration = Duration();
+  int days = 0;
+  int hours = 0;
+  int minutes = 0;
 
   bool isSolo = true;
 
@@ -84,6 +90,44 @@ class _AddGoalsState extends State<AddGoals> {
                 ),
               ],
             ),
+            Text("Select your Intervall", style: TextStyle(fontSize: 20)),
+            Row(
+              children: [
+                Text("Days:", style: TextStyle(fontSize: 20)),
+                NumberPicker(
+                  itemWidth: 50,
+                  infiniteLoop: true,
+                  minValue: 0,
+                  maxValue: 30,
+                  value: days,
+                  onChanged: (int i) => setState(() {
+                    days = i;
+                  }),
+                ),
+                Text("Hours:", style: TextStyle(fontSize: 20)),
+                NumberPicker(
+                  itemWidth: 50,
+                  infiniteLoop: true,
+                  minValue: 0,
+                  maxValue: 23,
+                  value: hours,
+                  onChanged: (int i) => setState(() {
+                    hours = i;
+                  }),
+                ),
+                Text("Minutes:", style: TextStyle(fontSize: 20)),
+                NumberPicker(
+                  itemWidth: 50,
+                  infiniteLoop: true,
+                  minValue: 0,
+                  maxValue: 59,
+                  value: minutes,
+                  onChanged: (int i) => setState(() {
+                    minutes = i;
+                  }),
+                ),
+              ],
+            ),
             ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
           ],
         ),
@@ -101,7 +145,7 @@ class _AddGoalsState extends State<AddGoals> {
           0,
           isSolo,
           group,
-          Duration(days: 0, hours: 1, minutes: 5, seconds: 1),
+          Duration(days: days, hours: hours, minutes: minutes, seconds: 0),
         ),
       );
       Navigator.pop(context);
