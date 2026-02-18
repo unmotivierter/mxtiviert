@@ -21,41 +21,62 @@ class _AppState extends State<App> {
 
   //add sort by time left
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         //title: _buildAppBar(context),
-        title: Text(getAppBarText(context.watch<Globals>().currentTab), style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer)),
-        actions: [ if(context.watch<Globals>().currentTab == TabItems.home) Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-            child: DropdownButton(
-              value: selected,
-              items: [
-                DropdownMenuItem(value: Sortby.sDesc, child: Text("Streak ↓")),
-                DropdownMenuItem(value: Sortby.sAsc, child: Text("Streak ↑")),
-                DropdownMenuItem(value: Sortby.sPbDesc, child: Text("Streak PB ↓")),
-                DropdownMenuItem(value: Sortby.sPbAsc, child: Text("Streak PB ↑")),
-                DropdownMenuItem(value: Sortby.nDesc, child: Text("Name ↓")),
-                DropdownMenuItem(value: Sortby.nAsc, child: Text("Name ↑")),
-              ],
-              onChanged: (sort) {
-                setState(() {
-                  selected = sort!;
-                  context.read<Globals>().setCompFunc(sort);
-                });
-              },
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
+        title: Text(
+          getAppBarText(context.watch<Globals>().currentTab),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+        ),
+        actions: [
+          if (context.watch<Globals>().currentTab == TabItems.home)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                child: DropdownButton(
+                  value: selected,
+                  items: [
+                    DropdownMenuItem(
+                      value: Sortby.sDesc,
+                      child: Text("Streak ↓"),
+                    ),
+                    DropdownMenuItem(
+                      value: Sortby.sAsc,
+                      child: Text("Streak ↑"),
+                    ),
+                    DropdownMenuItem(
+                      value: Sortby.sPbDesc,
+                      child: Text("Streak PB ↓"),
+                    ),
+                    DropdownMenuItem(
+                      value: Sortby.sPbAsc,
+                      child: Text("Streak PB ↑"),
+                    ),
+                    DropdownMenuItem(
+                      value: Sortby.nDesc,
+                      child: Text("Name ↓"),
+                    ),
+                    DropdownMenuItem(value: Sortby.nAsc, child: Text("Name ↑")),
+                  ],
+                  onChanged: (sort) {
+                    setState(() {
+                      selected = sort!;
+                      context.read<Globals>().setCompFunc(sort);
+                    });
+                  },
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
               ),
             ),
-          ), 
-          ),],
-        ),
+        ],
+      ),
       body: _buildBody(context),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -94,13 +115,15 @@ class _AppState extends State<App> {
         onTap: (int i) {
           context.read<Globals>().selectTab(i);
           selectidx = i;
-          if(context.read<Globals>().currentTab == TabItems.add){
+          if (context.read<Globals>().currentTab == TabItems.add) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddGoals()),
             ).then((_) {
               // ignore: use_build_context_synchronously
+
               context.read<Globals>().selectTab(0);
+              selectidx = 0;
             });
           }
         },
@@ -137,11 +160,21 @@ class _AppState extends State<App> {
 Widget _buildAppBar(BuildContext context) {
   String title = "";
   switch (context.watch<Globals>().currentTab) {
-    case TabItems.home: title = "Home"; break;
-    case TabItems.group: title = "Groups"; break;
-    case TabItems.calendar: title = "Calendar"; break;
-    case TabItems.settings: title = "Settings"; break;
-    case TabItems.add: title = "Add Goal"; break;
+    case TabItems.home:
+      title = "Home";
+      break;
+    case TabItems.group:
+      title = "Groups";
+      break;
+    case TabItems.calendar:
+      title = "Calendar";
+      break;
+    case TabItems.settings:
+      title = "Settings";
+      break;
+    case TabItems.add:
+      title = "Add Goal";
+      break;
   }
 
   return SizedBox(
@@ -155,12 +188,17 @@ Widget _buildAppBar(BuildContext context) {
   );
 }
 
-String getAppBarText(TabItems currentTab){
+String getAppBarText(TabItems currentTab) {
   switch (currentTab) {
-    case TabItems.home: return "Home";
-    case TabItems.group: return "Groups";
-    case TabItems.calendar: return "Calendar";
-    case TabItems.settings: return "Settings";
-    case TabItems.add: return "Add Goal";
+    case TabItems.home:
+      return "Home";
+    case TabItems.group:
+      return "Groups";
+    case TabItems.calendar:
+      return "Calendar";
+    case TabItems.settings:
+      return "Settings";
+    case TabItems.add:
+      return "Add Goal";
   }
 }
