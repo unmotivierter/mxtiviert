@@ -5,7 +5,6 @@ import 'package:numberpicker/numberpicker.dart';
 
 import 'main.dart';
 
-
 class AddGoals extends StatefulWidget {
   const AddGoals({super.key});
 
@@ -20,6 +19,7 @@ class _AddGoalsState extends State<AddGoals> {
   int days = 0;
   int hours = 0;
   int minutes = 0;
+  int amount = 0;
 
   bool isSolo = true;
 
@@ -83,44 +83,109 @@ class _AddGoalsState extends State<AddGoals> {
                 ),
               ],
             ),
-            Text("Select your Intervall", style: TextStyle(fontSize: 20)),
-            Row(
-              children: [
-                Text("Days:", style: TextStyle(fontSize: 20)),
-                NumberPicker(
-                  itemWidth: 50,
-                  infiniteLoop: true,
-                  minValue: 0,
-                  maxValue: 30,
-                  value: days,
-                  onChanged: (int i) => setState(() {
-                    days = i;
-                  }),
-                ),
-                Text("Hours:", style: TextStyle(fontSize: 20)),
-                NumberPicker(
-                  itemWidth: 50,
-                  infiniteLoop: true,
-                  minValue: 0,
-                  maxValue: 23,
-                  value: hours,
-                  onChanged: (int i) => setState(() {
-                    hours = i;
-                  }),
-                ),
-                Text("Minutes:", style: TextStyle(fontSize: 20)),
-                NumberPicker(
-                  itemWidth: 50,
-                  infiniteLoop: true,
-                  minValue: 0,
-                  maxValue: 59,
-                  value: minutes,
-                  onChanged: (int i) => setState(() {
-                    minutes = i;
-                  }),
-                ),
-              ],
+            ElevatedButton(
+              child: Text(
+                "Select your Intervall",
+                style: TextStyle(fontSize: 20),
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    int dayController = 1;
+                    int hourController = 0;
+                    int minuteController = 0;
+                    int amt = 0;
+
+                    return StatefulBuilder(
+                      builder: (context, setStateSheet) => Scaffold(
+                        body: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Enter Amount per Time: ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              SizedBox(
+                                width: 100,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+
+                                  onChanged: (value) => setStateSheet(() {
+                                    amt = int.parse(value);
+                                  }),
+                                ),
+                              ),
+
+                              Row(
+                                children: [
+                                  Text("Days:", style: TextStyle(fontSize: 20)),
+                                  NumberPicker(
+                                    itemWidth: 50,
+                                    infiniteLoop: true,
+                                    minValue: 0,
+                                    maxValue: 30,
+                                    value: dayController,
+                                    onChanged: (int i) => setStateSheet(() {
+                                      dayController = i;
+                                    }),
+                                  ),
+                                  Text(
+                                    "Hours:",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  NumberPicker(
+                                    itemWidth: 50,
+                                    infiniteLoop: true,
+                                    minValue: 0,
+                                    maxValue: 23,
+                                    value: hourController,
+                                    onChanged: (int i) => setStateSheet(() {
+                                      hourController = i;
+                                    }),
+                                  ),
+                                  Text(
+                                    "Minutes:",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  NumberPicker(
+                                    itemWidth: 50,
+                                    infiniteLoop: true,
+                                    minValue: 0,
+                                    maxValue: 59,
+                                    value: minuteController,
+                                    onChanged: (int i) => setStateSheet(() {
+                                      minuteController = i;
+                                    }),
+                                  ),
+                                ],
+                              ),
+
+                              ElevatedButton(
+                                child: Text("Done"),
+
+                                onPressed: () {
+                                  setState(() {
+                                    days = dayController;
+                                    hours = hourController;
+                                    minutes = minuteController;
+                                    amount = amt;
+                                  });
+
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
+
             ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
           ],
         ),
@@ -130,7 +195,15 @@ class _AddGoalsState extends State<AddGoals> {
 
   void _onPressed() {
     Provider.of<Globals>(context, listen: false).addStreakItem(
-      StreakItem(goalName, 0, 0, 0, isSolo, group, Duration(hours: 1, minutes: 5, seconds: 1))
+      StreakItem(
+        goalName,
+        0,
+        0,
+        0,
+        isSolo,
+        group,
+        Duration(hours: 1, minutes: 5, seconds: 1),
+      ),
     );
     Navigator.pop(context);
   }

@@ -54,7 +54,9 @@ class _StreakScrollerState extends State<StreakScroller> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StreakScreenSp(streakItem: context.watch<Globals>().streakItems[i]),
+            builder: (context) => StreakScreenSp(
+              streakItem: context.watch<Globals>().streakItems[i],
+            ),
           ),
         );
       },
@@ -206,7 +208,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   //static Duration dur = Duration(minutes: 1, seconds: 9);
   late ValueNotifier<Duration> durationNotifier = ValueNotifier<Duration>(dur);
   Timer? timer;
-  bool terminated = false;
 
   @override
   void initState() {
@@ -228,7 +229,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     //print("reduced Time by 1");
     setState(() {
       int seconds = durationNotifier.value.inSeconds - 1;
-      if (seconds < 0 || terminated) {
+      if (seconds < 0) {
         onTimeout();
         //timer?.cancel();
       } else {
@@ -243,7 +244,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   void onTimeout() {
     context.read<Globals>().streakItems[widget.itemIndex].streakCount = 0;
     widget.callback();
-    terminated = true;
   }
 
   @override
