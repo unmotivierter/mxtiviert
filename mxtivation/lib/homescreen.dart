@@ -209,92 +209,47 @@ class TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<TimerWidget> {
-  //_TimerWidgetState({required this.dur});
-  //var duration = 0;
-  late Duration dur = widget.dura;
-
-  //static Duration dur = Duration(minutes: 1, seconds: 9);
-  late ValueNotifier<Duration> durationNotifier = ValueNotifier<Duration>(dur);
-  Timer? timer;
-
   @override
   void initState() {
     super.initState();
-    startTimer();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    timer?.cancel();
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => reduceTime());
-    //durationNotifier = ValueNotifier<Duration>(dur);
-  }
-
-  void reduceTime() {
-    //print("reduced Time by 1");
-    setState(() {
-      int seconds = durationNotifier.value.inSeconds - 1;
-      if (seconds < 0) {
-        onTimeout();
-        //timer?.cancel();
-      } else {
-        //debugPrint("${context.read<Globals>().streakItems[1].duration}");
-        durationNotifier.value = Duration(seconds: seconds);
-        dur = Duration(seconds: seconds);
-        context.read<Globals>().streakItems[widget.itemIndex].duration = dur;
-      }
-      //print(durationNotifier.value.inSeconds);
+    // Access provider correctly
+    Future.microtask(() {
+      context.read<Globals>().startTimer(widget.itemIndex);
     });
-  }
-
-  void onTimeout() {
-    //debugPrint("${durationNotifier.value.inSeconds}");
-    context.read<Globals>().streakItems[widget.itemIndex].streakCount = 0;
-    context.read<Globals>().resetDuration(widget.itemIndex);
-    dur = context.read<Globals>().streakItems[widget.itemIndex].duration;
-    durationNotifier = ValueNotifier<Duration>(dur);
-    timer?.cancel();
-    startTimer();
-    widget.callback();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        //Text("Time left: ", style: TextStyle(fontSize: 20)),
-        buildTime(dur),
-      ],
-    );
+    final duration = context
+        .watch<Globals>()
+        .streakItems[widget.itemIndex]
+        .duration;
+
+    return Row(children: [buildTime(duration)]);
   }
 
   Widget buildTime(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
+
     final days = twoDigits(duration.inDays);
     final hours = twoDigits(duration.inHours.remainder(24));
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          (duration.inDays > 0)
-              ? Text(
-                  "Time left: $days:$hours:$minutes:$seconds",
-                  style: TextStyle(fontSize: 20),
-                )
-              : Text(
-                  "Time left: $hours:$minutes:$seconds",
-                  style: TextStyle(fontSize: 20),
-                ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        duration.inDays > 0
+            ? Text(
+                "Time left: $days:$hours:$minutes:$seconds",
+                style: TextStyle(fontSize: 20),
+              )
+            : Text(
+                "Time left: $hours:$minutes:$seconds",
+                style: TextStyle(fontSize: 20),
+              ),
+      ],
     );
   }
 }
