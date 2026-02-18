@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:provider/provider.dart';
 import 'navigation.dart';
 
+enum TabItems { home, group, add, calendar, settings }
+enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
+
 void main() {
-  runApp(MainApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => Globals(),
+      child: MainApp())
+    );
 }
 
 class MainApp extends StatelessWidget {
@@ -40,4 +47,16 @@ class StreakItem {
     this.goaler,
     this.duration,
   );
+}
+
+
+class Globals extends ChangeNotifier{
+  TabItems currentTab = TabItems.home;
+  
+
+  void selectTab(int i) {
+    currentTab = TabItems.values[i];
+    notifyListeners();
+  }
+
 }

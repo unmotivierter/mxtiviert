@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'homescreen.dart';
 import 'main.dart';
@@ -6,10 +7,6 @@ import 'goals.dart';
 
 typedef CompareFunction = int Function(dynamic a, dynamic b);
 
-enum TabItems { home, group, add, calendar, settings }
-enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
-
-TabItems currentTab = TabItems.home;
 
 List<StreakItem> streakItems = AddGoals().getStreakList();
 
@@ -26,25 +23,7 @@ Sortby selected = Sortby.sDesc;
 
 class _AppState extends State<App> {
   int currentinx = 0;
-  int selectinx = 0;
-
-  void selectTab(int i) {
-    setState(() {
-      currentTab = TabItems.values[i];
-      selectinx = i;
-      if (currentTab == TabItems.add) {
-        selectinx = 0;
-        currentinx = 0;
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AddGoals()),
-        ).then((_) {
-          selectTab(0);
-        });
-      }
-    });
-  }
+  int selectidx = 0;
 
   int sortStreakDescending(dynamic a, dynamic b) => b.streakCount.compareTo(a.streakCount);
   int sortStreakAscending(dynamic a, dynamic b) => a.streakCount.compareTo(b.streakCount);
@@ -72,8 +51,8 @@ class _AppState extends State<App> {
     return Scaffold(
       appBar: AppBar(
         //title: _buildAppBar(context),
-        title: Text(getAppBarText(), style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer)),
-        actions: [ if(currentTab == TabItems.home) Align(
+        title: Text(getAppBarText(context.watch<Globals>().currentTab), style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer)),
+        actions: [ if(context.watch<Globals>().currentTab == TabItems.home) Align(
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
@@ -130,19 +109,31 @@ class _AppState extends State<App> {
             backgroundColor: Theme.of(context).colorScheme.surface,
           ),
         ],
-        currentIndex: selectinx,
+        currentIndex: selectidx,
         selectedItemColor: Theme.of(context).colorScheme.primaryContainer,
         unselectedItemColor: Theme.of(context).colorScheme.primary,
 
         //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        onTap: selectTab,
+        onTap: (int i) {
+          context.read<Globals>().selectTab(i);
+          selectidx = i;
+          if(context.watch<Globals>().currentTab == TabItems.add){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddGoals()),
+            ).then((_) {
+              // ignore: use_build_context_synchronously
+              context.read<Globals>().selectTab(0);
+            });
+          }
+        },
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
     Widget selectedWidget;
-    switch (currentTab) {
+    switch (context.watch<Globals>().currentTab) {
       case TabItems.home:
         selectedWidget = StreakScroller(streakItems: streakItems);
 
@@ -168,21 +159,12 @@ class _AppState extends State<App> {
 
 Widget _buildAppBar(BuildContext context) {
   String title = "";
-  switch (currentTab) {
-    case TabItems.home:
-      title = "Home";
-      break;
-    case TabItems.group:
-      title = "Groups";
-      break;
-    case TabItems.calendar:
-      title = "Calendar";
-      break;
-    case TabItems.settings:
-      title = "Settings";
-      break;
-    case TabItems.add:
-      title = "Add Goal";
+  switch (context.watch<Globals>().currentTab) {
+    case TabItems.home: title = "Home"; break;
+    case TabItems.group: title = "Groups"; break;
+    case TabItems.calendar: title = "Calendar"; break;
+    case TabItems.settings: title = "Settings"; break;
+    case TabItems.add: title = "Add Goal"; break;
   }
 
   return SizedBox(
@@ -197,7 +179,7 @@ Widget _buildAppBar(BuildContext context) {
   );
 }
 
-String getAppBarText(){
+String getAppBarText(TabItems currentTab){
   switch (currentTab) {
     case TabItems.home: return "Home";
     case TabItems.group: return "Groups";
