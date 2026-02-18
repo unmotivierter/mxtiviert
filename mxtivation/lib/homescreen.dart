@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'navigation.dart';
+import 'streak_sp.dart';
 
 typedef CompareFunction = int Function(dynamic a, dynamic b);
 
@@ -36,7 +37,10 @@ class _StreakScrollerState extends State<StreakScroller> {
       itemExtent: streakItemHeight.toDouble(),
       scrollDirection: Axis.vertical,
       onTap: (int i) {
-        //wip
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StreakScreenSp(streakItem: streakItems[i],)),
+        );
       },
       children: createScrollerItemsFromList(widget.streakItems),
     );

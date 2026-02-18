@@ -26,8 +26,9 @@ class StreakItem {
   String title;
   int streakCount;
   int streakPbCount;
+  int groupStreak;
   bool solo;
   String goaler; //name of person/group who have goal :)
   //add time left and time interval
-  StreakItem(this.title, this.streakCount, this.streakPbCount, this.solo, this.goaler);
+  StreakItem(this.title, this.streakCount, this.streakPbCount, this.groupStreak, this.solo, this.goaler);
 }

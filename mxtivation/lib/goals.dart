@@ -3,8 +3,8 @@ import 'package:mxtivation/navigation.dart';
 import 'main.dart';
 
 final List<StreakItem> streakItems = [
-  StreakItem("Streak 1", 12, 30, true, "Group 1"),
-  StreakItem("Streak 2", 0, 4, false, "PePe"),
+  StreakItem("Streak 1", 12, 30, 4, true, "Group 1"),
+  StreakItem("Streak 2", 0, 14, 0, false, "PePe"),
 ];
 
 class AddGoals extends StatefulWidget {
@@ -92,7 +92,7 @@ class _AddGoalsState extends State<AddGoals> {
 
   void _onPressed() {
     setState(() {
-      streakItems.add(new StreakItem(goalName, 0, 0, isSolo, group));
+      streakItems.add(new StreakItem(goalName, 0, 0, 0, isSolo, group));
       Navigator.pop(context);
 
       print(streakItems.length);

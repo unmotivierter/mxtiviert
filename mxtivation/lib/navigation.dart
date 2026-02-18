@@ -71,26 +71,33 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _buildAppBar(context),
-        actions: [Align(
+        //title: _buildAppBar(context),
+        title: Text(getAppBarText(), style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer)),
+        actions: [ if(currentTab == TabItems.home) Align(
           alignment: Alignment.centerRight,
-          child: DropdownButton(
-            value: selected,
-            items: [
-              DropdownMenuItem(value: Sortby.sDesc, child: Text("Streak ↓")),
-              DropdownMenuItem(value: Sortby.sAsc, child: Text("Streak ↑")),
-              DropdownMenuItem(value: Sortby.sPbDesc, child: Text("Streak PB ↓")),
-              DropdownMenuItem(value: Sortby.sPbAsc, child: Text("Streak PB ↑")),
-              DropdownMenuItem(value: Sortby.nDesc, child: Text("Name ↓")),
-              DropdownMenuItem(value: Sortby.nAsc, child: Text("Name ↑")),
-            ],
-            onChanged: (sort) {
-              setState(() {
-                selected = sort!;
-                setCompFunc(sort);
-              });
-            },
-          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+            child: DropdownButton(
+              value: selected,
+              items: [
+                DropdownMenuItem(value: Sortby.sDesc, child: Text("Streak ↓")),
+                DropdownMenuItem(value: Sortby.sAsc, child: Text("Streak ↑")),
+                DropdownMenuItem(value: Sortby.sPbDesc, child: Text("Streak PB ↓")),
+                DropdownMenuItem(value: Sortby.sPbAsc, child: Text("Streak PB ↑")),
+                DropdownMenuItem(value: Sortby.nDesc, child: Text("Name ↓")),
+                DropdownMenuItem(value: Sortby.nAsc, child: Text("Name ↑")),
+              ],
+              onChanged: (sort) {
+                setState(() {
+                  selected = sort!;
+                  setCompFunc(sort);
+                });
+              },
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          ), 
           ),],
         ),
       body: _buildBody(context),
@@ -188,4 +195,14 @@ Widget _buildAppBar(BuildContext context) {
     ),
     //color: Theme.of(context).colorScheme.inversePrimary,
   );
+}
+
+String getAppBarText(){
+  switch (currentTab) {
+    case TabItems.home: return "Home";
+    case TabItems.group: return "Groups";
+    case TabItems.calendar: return "Calendar";
+    case TabItems.settings: return "Settings";
+    case TabItems.add: return "Add Goal";
+  }
 }
