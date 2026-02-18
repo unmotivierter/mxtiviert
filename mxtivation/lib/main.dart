@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'navigation.dart';
+import 'comparefunctions.dart';
 
 enum TabItems { home, group, add, calendar, settings }
 enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
@@ -53,10 +54,23 @@ class StreakItem {
 class Globals extends ChangeNotifier{
   TabItems currentTab = TabItems.home;
   
+  int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;
+
+
 
   void selectTab(int i) {
     currentTab = TabItems.values[i];
     notifyListeners();
   }
-
+  void setCompFunc(Sortby sort){
+    switch(sort){
+      case Sortby.sDesc: compareFunc = sortStreakDescending; break;
+      case Sortby.sAsc: compareFunc = sortStreakAscending; break;
+      case Sortby.sPbDesc: compareFunc = sortStreakPbDescending; break;
+      case Sortby.sPbAsc: compareFunc = sortStreakPbAscending; break;
+      case Sortby.nDesc: compareFunc = sortNameDescending; break;
+      case Sortby.nAsc: compareFunc = sortNameAscending; break;
+    }
+    notifyListeners();
+  }
 }

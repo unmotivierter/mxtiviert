@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'main.dart';
 import 'navigation.dart';
 import 'streak_sp.dart';
 
-typedef CompareFunction = int Function(dynamic a, dynamic b);
-
-final int streakItemHeight = 150;
 
 class StreakScroller extends StatefulWidget {
   const StreakScroller({super.key, required this.streakItems});
 
   final List<StreakItem> streakItems;
+  final int streakItemHeight = 150;  //if you change this update the same on down below in StreakScrollerItem as well thank you
 
   @override
   State<StreakScroller> createState() => _StreakScrollerState();
@@ -24,7 +23,7 @@ class _StreakScrollerState extends State<StreakScroller> {
   bool temp = false;
 
   List<Widget> createScrollerItemsFromList(List<StreakItem> streakItems) {
-    streakItems.sort(curCompFunc);
+    streakItems.sort(Provider.of<Globals>(context, listen: true).compareFunc);
     List<Widget> items = [];
     for (final (int idx, StreakItem si) in streakItems.indexed) {
       items.add(
@@ -49,7 +48,7 @@ class _StreakScrollerState extends State<StreakScroller> {
     };
     return CarouselView(
       backgroundColor: Theme.of(context).colorScheme.outlineVariant,
-      itemExtent: streakItemHeight.toDouble(),
+      itemExtent: widget.streakItemHeight.toDouble(),
       scrollDirection: Axis.vertical,
       onTap: (int i) {
         Navigator.push(
@@ -76,6 +75,7 @@ class StreakScrollerItem extends StatelessWidget {
   final StreakItem streakItem;
   final int idx;
   final VoidCallback callback;
+  final int streakItemHeight = 150;
 
   @override
   Widget build(BuildContext context) {

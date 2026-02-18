@@ -7,10 +7,7 @@ import 'goals.dart';
 
 typedef CompareFunction = int Function(dynamic a, dynamic b);
 
-
 List<StreakItem> streakItems = AddGoals().getStreakList();
-
-CompareFunction curCompFunc = (a, b) => 0;
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -22,29 +19,11 @@ class App extends StatefulWidget {
 Sortby selected = Sortby.sDesc;
 
 class _AppState extends State<App> {
-  int currentinx = 0;
   int selectidx = 0;
 
-  int sortStreakDescending(dynamic a, dynamic b) => b.streakCount.compareTo(a.streakCount);
-  int sortStreakAscending(dynamic a, dynamic b) => a.streakCount.compareTo(b.streakCount);
-  int sortStreakPbDescending(dynamic a, dynamic b) => b.streakPbCount.compareTo(a.streakPbCount);
-  int sortStreakPbAscending(dynamic a, dynamic b) => a.streakPbCount.compareTo(b.streakPbCount);
-  int sortNameAscending(dynamic a, dynamic b) => a.title.compareTo(b.title);
-  int sortNameDescending(dynamic a, dynamic b) => b.title.compareTo(a.title);
   //add sort by time left
 
-  void setCompFunc(Sortby sort){
-    setState(() {
-      switch(sort){
-        case Sortby.sDesc: curCompFunc = sortStreakDescending; break;
-        case Sortby.sAsc: curCompFunc = sortStreakAscending; break;
-        case Sortby.sPbDesc: curCompFunc = sortStreakPbDescending; break;
-        case Sortby.sPbAsc: curCompFunc = sortStreakPbAscending; break;
-        case Sortby.nDesc: curCompFunc = sortNameDescending; break;
-        case Sortby.nAsc: curCompFunc = sortNameAscending; break;
-      }
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +48,7 @@ class _AppState extends State<App> {
               onChanged: (sort) {
                 setState(() {
                   selected = sort!;
-                  setCompFunc(sort);
+                  context.read<Globals>().setCompFunc(sort);
                 });
               },
               style: TextStyle(
@@ -117,7 +96,7 @@ class _AppState extends State<App> {
         onTap: (int i) {
           context.read<Globals>().selectTab(i);
           selectidx = i;
-          if(context.watch<Globals>().currentTab == TabItems.add){
+          if(context.read<Globals>().currentTab == TabItems.add){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddGoals()),
