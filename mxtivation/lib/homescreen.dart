@@ -21,16 +21,18 @@ class StreakScroller extends StatefulWidget {
 class _StreakScrollerState extends State<StreakScroller> {
   bool tapped = false;
   VoidCallback myCallback = () {};
+  bool temp = false;
 
   List<Widget> createScrollerItemsFromList(List<StreakItem> streakItems) {
     streakItems.sort(curCompFunc);
     List<Widget> items = [];
-    for (StreakItem si in streakItems) {
+    for (final (int idx, StreakItem si) in streakItems.indexed) {
       items.add(
         StreakScrollerItem(
+          key: ValueKey(si),
           paddingSize: 10,
           streakItem: si,
-          idx: streakItems.indexOf(si),
+          idx: idx,
           callback: myCallback,
         ),
       );
@@ -41,9 +43,10 @@ class _StreakScrollerState extends State<StreakScroller> {
   @override
   Widget build(BuildContext context) {
     myCallback = () {
-      setState(() {});
+      setState(() {
+        temp = true;
+      });
     };
-    setState(() {});
     return CarouselView(
       backgroundColor: Theme.of(context).colorScheme.outlineVariant,
       itemExtent: streakItemHeight.toDouble(),
@@ -143,7 +146,7 @@ class StreakScrollerItem extends StatelessWidget {
             left: 150,
             top: 50,
             child: TimerWidget(
-              dura: streakItem.duration,
+              dura: streakItems[idx].duration,
               itemIndex: idx,
               callback: callback,
             ),
@@ -203,11 +206,18 @@ class _TimerWidgetState extends State<TimerWidget> {
   //static Duration dur = Duration(minutes: 1, seconds: 9);
   late ValueNotifier<Duration> durationNotifier = ValueNotifier<Duration>(dur);
   Timer? timer;
+  bool terminated = false;
 
   @override
   void initState() {
     super.initState();
     startTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
   }
 
   void startTimer() {
@@ -218,12 +228,13 @@ class _TimerWidgetState extends State<TimerWidget> {
     //print("reduced Time by 1");
     setState(() {
       int seconds = durationNotifier.value.inSeconds - 1;
-      if (seconds < 0) {
+      if (seconds < 0 || terminated) {
         onTimeout();
-        timer?.cancel();
+        //timer?.cancel();
       } else {
         durationNotifier.value = Duration(seconds: seconds);
         dur = Duration(seconds: seconds);
+        streakItems[widget.itemIndex].duration = dur;
       }
       //print(durationNotifier.value.inSeconds);
     });
@@ -231,10 +242,10 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   void onTimeout() {
     setState(() {
-      debugPrint("${widget.itemIndex}");
       streakItems[widget.itemIndex].streakCount = 0;
       widget.callback();
-      print("Timeout");
+      //print("Timeout");
+      terminated = true;
     });
   }
 

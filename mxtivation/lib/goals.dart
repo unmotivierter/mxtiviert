@@ -4,7 +4,7 @@ import 'main.dart';
 
 final List<StreakItem> streakItems = [
   StreakItem("Streak 1", 12, 30, 4, true, "Group 1", Duration(hours: 2)),
-  StreakItem("Streak 2", 1, 14, 0, false, "PePe", Duration(seconds: 5)),
+  StreakItem("Streak 2", 1, 14, 0, false, "PePe", Duration(seconds: 10)),
 ];
 
 class AddGoals extends StatefulWidget {
