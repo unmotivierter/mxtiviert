@@ -8,6 +8,7 @@ enum TabItems { home, group, add, calendar, settings }
 enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc}
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(ChangeNotifierProvider(
       create: (context) => Globals(),
       child: MainApp())
