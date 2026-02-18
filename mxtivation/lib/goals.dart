@@ -69,7 +69,7 @@ class _AddGoalsState extends State<AddGoals> {
                 Text("Select your group", style: TextStyle(fontSize: 20)),
                 DropdownMenu(
                   enabled: !isSolo,
-
+                  enableSearch: false,
                   label: Text("Personal"),
                   dropdownMenuEntries: [
                     DropdownMenuEntry(value: "Personal", label: "Personal"),
