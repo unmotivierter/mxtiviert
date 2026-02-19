@@ -116,6 +116,10 @@ class Globals extends ChangeNotifier {
   void selectTab(int i) {
     currentTab = TabItems.values[i];
 
+    if (currentTab == TabItems.calendar) {
+      updateListFromStreak(streakItems[selectedStreak]);
+      debugPrint("$selectedStreak");
+    }
     notifyListeners();
   }
 
@@ -198,6 +202,7 @@ class Globals extends ChangeNotifier {
   List<DropdownMenuEntry> dropDownbuttons = [];
 
   void updateListFromStreak(StreakItem si) {
+    streakDays.clear();
     final idx = streakItems.indexOf(si);
     if (idx == -1) return;
 

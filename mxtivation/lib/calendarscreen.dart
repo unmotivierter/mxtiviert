@@ -102,7 +102,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
               child: TableCalendar(
                 focusedDay: _focusedDay,
                 firstDay: DateTime(DateTime.now().year - 1),
-                lastDay: DateTime(DateTime.now().year + 1),
+                lastDay: DateTime.now(),
                 /*selectedDayPredicate: (day) {
                   return isSameDay(_selectedDay, day);
                 },
