@@ -203,16 +203,16 @@ class _AddGoalsState extends State<AddGoals> {
   void _onPressed() {
     Provider.of<Globals>(context, listen: false).addStreakItem(
       StreakItem(
-        goalName,
-        0,
-        0,
-        0,
-        isSolo,
-        group,
-        Duration(hours: hours, days: days, minutes: minutes),
-        Duration(hours: hours, days: days, minutes: minutes),
-        amount,
-        amount,
+        title: goalName,
+        streakCount: 0,
+        streakPbCount: 0,
+        groupStreak: 0,
+        solo: isSolo,
+        goaler: group,
+        duration: Duration(hours: hours, days: days, minutes: minutes),
+        intervall: Duration(hours: hours, days: days, minutes: minutes),
+        amountPerIntervall: amount,
+        amountLeft: amount,
       ),
     );
     context.read<Globals>().fillStreakDropdownMenu();

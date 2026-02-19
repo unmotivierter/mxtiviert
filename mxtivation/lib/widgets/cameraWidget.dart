@@ -116,10 +116,10 @@ class _CameraScreenState extends State<CameraScreen> {
               List<File> streakPhotos = getStreakPhotos(context, streakItem.title);
               Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
               context.read<Globals>().getPhotosForItem.addEntries([
-                MapEntry(streakItem.title, StreakPhotos()),
+                MapEntry(streakItem.title, StreakPhotos(photos: streakPhotos, verifiedPhotos: verifiedPhotos)),
               ]);
-              context.read<Globals>().getPhotosForItem[streakItem.title]!.photos = streakPhotos;
-              context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos = verifiedPhotos;
+              //context.read<Globals>().getPhotosForItem[streakItem.title]!.photos = streakPhotos;
+              //context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos = verifiedPhotos;
             }
             else{
               context.read<Globals>().getPhotosForItem[streakItem.title]!.photos.add(File(newPath));
