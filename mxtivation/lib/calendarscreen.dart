@@ -63,12 +63,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
           .read<Globals>()
           .selectedStreak],
     );*/
-    if (context.read<Globals>().streakDays[day] != null &&
-        context.read<Globals>().streakDays[day] ==
-            context.read<Globals>().streakItems[sId]) {
-      return true;
-    }
-    return false;
+
+    final normalizedDay = normalizeDate(day);
+    return context.read<Globals>().streakDays[normalizedDay]?.contains(sId) ??
+        false;
   }
 
   /*

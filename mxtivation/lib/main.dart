@@ -128,7 +128,7 @@ class Globals extends ChangeNotifier {
     currentTab = TabItems.values[i];
 
     if (currentTab == TabItems.calendar) {
-      updateListFromStreak(streakItems[selectedStreak]);
+      updateListFromStreak(selectedStreak);
       debugPrint("$selectedStreak");
     }
     notifyListeners();
@@ -275,31 +275,38 @@ class Globals extends ChangeNotifier {
 
     _timers[idx]?.cancel();
     startTimer(idx);
-    updateListFromStreak(streakItems[selectedStreak]);
+    updateListFromStreak(selectedStreak);
     notifyListeners();
   }
 
   //Calendar
-  final Map<DateTime, StreakItem> streakDays = {};
+  final Map<DateTime, Set<int>> streakDays = {};
+
   int selectedStreak = 0;
   List<DropdownMenuEntry> dropDownbuttons = [];
 
-  void updateListFromStreak(StreakItem si) {
-    streakDays.clear();
-    final idx = streakItems.indexOf(si);
-    if (idx == -1) return;
-
+  void updateListFromStreak(int streakIdx) {
+    final si = streakItems[streakIdx];
     final currentDate = DateTime.now();
 
-    streakDays[normalizeDate(DateTime.now().subtract(Duration(days: 30)))] = si;
+    addNewDate(0, DateTime(2026, 1, 16));
 
-    for (int i = 0; i < streakItems[idx].streakCount; i++) {
+    for (int i = 0; i < si.streakCount; i++) {
       final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
 
-      //streakDays.addEntries([MapEntry(streakDate, si)]);
-      streakDays[streakDate] = si;
-      //debugPrint("${streakDays}");
+      addNewDate(streakIdx, streakDate);
     }
+
+    notifyListeners();
+  }
+
+  void addNewDate(int streakIdx, DateTime date) {
+    final normalizedDate = normalizeDate(date);
+
+    streakDays.putIfAbsent(normalizedDate, () => <int>{});
+
+    streakDays[normalizedDate]!.add(streakIdx);
+
     notifyListeners();
   }
 
