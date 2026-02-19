@@ -126,6 +126,7 @@ class Globals extends ChangeNotifier {
 
   void selectTab(int i) {
     currentTab = TabItems.values[i];
+
     notifyListeners();
   }
 
@@ -232,8 +233,6 @@ class Globals extends ChangeNotifier {
 
   Map<StreakItem, Color> streakColors = {};
 
-  int selectedStreak = 0;
-
   void startTimer(int idx) {
     _timers[idx]?.cancel();
 
@@ -258,7 +257,7 @@ class Globals extends ChangeNotifier {
 
   void onTimeout(int idx) {
     final streakItem = streakItems[idx];
-    if(streakItem.amountLeft > 0){
+    if (streakItem.amountLeft > 0) {
       streakItems[idx].streakCount = 0;
     }
 
@@ -268,12 +267,13 @@ class Globals extends ChangeNotifier {
 
     _timers[idx]?.cancel();
     startTimer(idx);
+    updateListFromStreak(streakItems[selectedStreak]);
     notifyListeners();
   }
 
   //Calendar
   final Map<DateTime, StreakItem> streakDays = {};
-
+  int selectedStreak = 0;
   List<DropdownMenuEntry> dropDownbuttons = [];
 
   void updateListFromStreak(StreakItem si) {
@@ -287,8 +287,8 @@ class Globals extends ChangeNotifier {
       //streakDays.addEntries([MapEntry(streakDate, si)]);
       streakDays[streakDate] = si;
       //debugPrint("${streakDays}");
-      //notifyListeners();
     }
+    notifyListeners();
   }
 
   void updateStreakColors() {

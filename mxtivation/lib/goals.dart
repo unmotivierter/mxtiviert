@@ -89,7 +89,7 @@ class _AddGoalsState extends State<AddGoals> {
                 showModalBottomSheet(
                   context: context,
                   builder: (BuildContext context) {
-                    int dayController = 1;
+                    int dayController = 0;
                     int hourController = 0;
                     int minuteController = 0;
                     int amt = 1;

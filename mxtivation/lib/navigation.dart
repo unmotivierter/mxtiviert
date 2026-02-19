@@ -89,7 +89,7 @@ class _AppState extends State<App> {
                 dropdownMenuEntries: context.read<Globals>().dropDownbuttons,
                 initialSelection: context
                     .read<Globals>()
-                    .dropDownbuttons[0]
+                    .dropDownbuttons[context.read<Globals>().selectedStreak]
                     .value,
                 onSelected: (value) => setState(() {
                   context.read<Globals>().selectedStreak = value;
