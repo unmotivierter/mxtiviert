@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_randomcolor/flutter_randomcolor.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
@@ -22,9 +23,15 @@ void main() async {
   if (!await imageDir.exists()) {
     await imageDir.create(recursive: true);
   }
+
+  await Hive.initFlutter();
+  await Hive.openBox('appData');
+
   runApp(
     ChangeNotifierProvider(
-      create: (context) => Globals(imageDir: imageDir),
+      create: (context) {
+        return Globals(imageDir: imageDir);
+      },
       child: MainApp(),
     ),
   );
@@ -58,28 +65,32 @@ class StreakItem {
   int amountPerIntervall;
   int amountLeft;
 
-  StreakItem(
-    this.title,
-    this.streakCount,
-    this.streakPbCount,
-    this.groupStreak,
-    this.solo,
-    this.goaler,
-    this.duration,
-    this.intervall,
-    this.amountPerIntervall,
-    this.amountLeft,
+  StreakItem({
+    required this.title,
+    required this.streakCount,
+    required this.streakPbCount,
+    required this.groupStreak,
+    required this.solo,
+    required this.goaler,
+    required this.duration,
+    required this.intervall,
+    required this.amountPerIntervall,
+    required this.amountLeft,}
   );
 }
 
 class StreakPhotos {
   List<File> photos = [];
   Map<String, bool> verifiedPhotos = {};
+  StreakPhotos({required this.photos, required this.verifiedPhotos});
 }
 
 class Globals extends ChangeNotifier {
   Globals({required this.imageDir});
   Directory imageDir = Directory('');
+
+  final box = Hive.box('appData');
+
   Map<String, StreakPhotos> getPhotosForItem = {};
 
   TabItems currentTab = TabItems.home;
@@ -88,28 +99,28 @@ class Globals extends ChangeNotifier {
 
   List<StreakItem> streakItems = [
     StreakItem(
-      "Streak 1",
-      12,
-      30,
-      4,
-      false,
-      "Group 1",
-      Duration(hours: 2),
-      Duration(hours: 2),
-      1,
-      1,
+      title: "Streak 1",
+      streakCount: 12,
+      streakPbCount: 30,
+      groupStreak: 4,
+      solo: false,
+      goaler: "Group 1",
+      duration: Duration(hours: 2),
+      intervall: Duration(hours: 2),
+      amountPerIntervall: 1,
+      amountLeft: 1,
     ),
     StreakItem(
-      "Streak 2",
-      1,
-      14,
-      0,
-      true,
-      "PePe",
-      Duration(seconds: 10),
-      Duration(seconds: 10),
-      2,
-      2,
+      title: "Streak 2",
+      streakCount:1,
+      streakPbCount: 14,
+      groupStreak: 0,
+      solo: true,
+      goaler: "PePe",
+      duration: Duration(seconds: 10),
+      intervall: Duration(seconds: 10),
+      amountPerIntervall: 2,
+      amountLeft: 2,
     ),
   ];
 
@@ -151,6 +162,74 @@ class Globals extends ChangeNotifier {
     streakItems.add(item);
     notifyListeners();
   }
+  
+  //saving data to files:
+  Future<void> saveData() async{
+    final data = {
+      'streakItems': streakItems.map((e) => {
+        'title': e.title,
+        'streakCount': e.streakCount,
+        'streakPbCount': e.streakPbCount,
+        'groupStreak': e.groupStreak,
+        'solo': e.solo,
+        'goaler': e.goaler,
+        'duration': e.duration.inSeconds,
+        'intervall': e.intervall.inSeconds,
+        'amountPerIntervall': e.amountPerIntervall,
+        'amountLeft': e.amountLeft,
+      }).toList(),
+
+      'photosMap': getPhotosForItem.map((key, value) => MapEntry(
+        key, 
+        {
+          'photoPaths': value.photos.map((f)=>f.path).toList(),
+          'verifiedPhotos': value.verifiedPhotos,
+        },
+      )),
+    };
+    
+    await box.put('appData', data);
+  }
+
+  //for testing porpuses
+  /*dynamic getData(){
+    return box.get('appData');
+  }*/
+
+
+  Future<void> loadData() async {
+  final data = box.get('appData');
+  if (data == null) return; // nothing saved yet
+
+  // Rebuild streakItems list
+  streakItems = (data['streakItems'] as List).map((e) => StreakItem(
+        title: e['title'],
+        streakCount: e['streakCount'],
+        streakPbCount: e['streakPbCount'],
+        groupStreak: e['groupStreak'],
+        solo: e['solo'],
+        goaler: e['goaler'],
+        duration: Duration(seconds: e['duration']),
+        intervall: Duration(seconds: e['intervall']),
+        amountPerIntervall: e['amountPerIntervall'],
+        amountLeft: e['amountLeft'],
+      )).toList();
+
+  // Rebuild getPhotosForItem map
+  getPhotosForItem = Map<String, StreakPhotos>.from(
+    (data['photosMap'] as Map).map((key, value) => MapEntry(
+          key,
+          StreakPhotos(
+            photos: (value['photoPaths'] as List)
+                .map((p) => File(p))
+                .toList(),
+            verifiedPhotos:
+                Map<String, bool>.from(value['verifiedPhotos']),
+          ),
+        )),
+  );
+}
+
 
   ///////Timer logic here:
 

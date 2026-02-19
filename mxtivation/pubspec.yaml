@@ -17,6 +17,8 @@ dependencies:
   path:
   table_calendar: ^3.2.0
   flutter_randomcolor: ^1.0.18
+  hive: 
+  hive_flutter:
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,9 @@
+browse android-emulator-filesystem:
+  $ adb shell
+  -> $ run-as com.example.mxtivation (or slightly other)
+  -> $ cd app_flutter (this is getApplicationDocumentsDirectory)
+
+
 all colorschemes:
   https://docs.flexcolorscheme.com/all_themes
 Colorscheme:
