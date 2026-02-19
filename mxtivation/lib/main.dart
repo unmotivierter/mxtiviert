@@ -75,8 +75,8 @@ class StreakItem {
     required this.duration,
     required this.intervall,
     required this.amountPerIntervall,
-    required this.amountLeft,}
-  );
+    required this.amountLeft,
+  });
 }
 
 class StreakPhotos {
@@ -112,7 +112,7 @@ class Globals extends ChangeNotifier {
     ),
     StreakItem(
       title: "Streak 2",
-      streakCount:1,
+      streakCount: 1,
       streakPbCount: 14,
       groupStreak: 0,
       solo: true,
@@ -162,32 +162,35 @@ class Globals extends ChangeNotifier {
     streakItems.add(item);
     notifyListeners();
   }
-  
-  //saving data to files:
-  Future<void> saveData() async{
-    final data = {
-      'streakItems': streakItems.map((e) => {
-        'title': e.title,
-        'streakCount': e.streakCount,
-        'streakPbCount': e.streakPbCount,
-        'groupStreak': e.groupStreak,
-        'solo': e.solo,
-        'goaler': e.goaler,
-        'duration': e.duration.inSeconds,
-        'intervall': e.intervall.inSeconds,
-        'amountPerIntervall': e.amountPerIntervall,
-        'amountLeft': e.amountLeft,
-      }).toList(),
 
-      'photosMap': getPhotosForItem.map((key, value) => MapEntry(
-        key, 
-        {
-          'photoPaths': value.photos.map((f)=>f.path).toList(),
+  //saving data to files:
+  Future<void> saveData() async {
+    final data = {
+      'streakItems': streakItems
+          .map(
+            (e) => {
+              'title': e.title,
+              'streakCount': e.streakCount,
+              'streakPbCount': e.streakPbCount,
+              'groupStreak': e.groupStreak,
+              'solo': e.solo,
+              'goaler': e.goaler,
+              'duration': e.duration.inSeconds,
+              'intervall': e.intervall.inSeconds,
+              'amountPerIntervall': e.amountPerIntervall,
+              'amountLeft': e.amountLeft,
+            },
+          )
+          .toList(),
+
+      'photosMap': getPhotosForItem.map(
+        (key, value) => MapEntry(key, {
+          'photoPaths': value.photos.map((f) => f.path).toList(),
           'verifiedPhotos': value.verifiedPhotos,
-        },
-      )),
+        }),
+      ),
     };
-    
+
     await box.put('appData', data);
   }
 
@@ -196,40 +199,41 @@ class Globals extends ChangeNotifier {
     return box.get('appData');
   }*/
 
-
   Future<void> loadData() async {
-  final data = box.get('appData');
-  if (data == null) return; // nothing saved yet
+    final data = box.get('appData');
+    if (data == null) return; // nothing saved yet
 
-  // Rebuild streakItems list
-  streakItems = (data['streakItems'] as List).map((e) => StreakItem(
-        title: e['title'],
-        streakCount: e['streakCount'],
-        streakPbCount: e['streakPbCount'],
-        groupStreak: e['groupStreak'],
-        solo: e['solo'],
-        goaler: e['goaler'],
-        duration: Duration(seconds: e['duration']),
-        intervall: Duration(seconds: e['intervall']),
-        amountPerIntervall: e['amountPerIntervall'],
-        amountLeft: e['amountLeft'],
-      )).toList();
+    // Rebuild streakItems list
+    streakItems = (data['streakItems'] as List)
+        .map(
+          (e) => StreakItem(
+            title: e['title'],
+            streakCount: e['streakCount'],
+            streakPbCount: e['streakPbCount'],
+            groupStreak: e['groupStreak'],
+            solo: e['solo'],
+            goaler: e['goaler'],
+            duration: Duration(seconds: e['duration']),
+            intervall: Duration(seconds: e['intervall']),
+            amountPerIntervall: e['amountPerIntervall'],
+            amountLeft: e['amountLeft'],
+          ),
+        )
+        .toList();
 
-  // Rebuild getPhotosForItem map
-  getPhotosForItem = Map<String, StreakPhotos>.from(
-    (data['photosMap'] as Map).map((key, value) => MapEntry(
+    // Rebuild getPhotosForItem map
+    getPhotosForItem = Map<String, StreakPhotos>.from(
+      (data['photosMap'] as Map).map(
+        (key, value) => MapEntry(
           key,
           StreakPhotos(
-            photos: (value['photoPaths'] as List)
-                .map((p) => File(p))
-                .toList(),
-            verifiedPhotos:
-                Map<String, bool>.from(value['verifiedPhotos']),
+            photos: (value['photoPaths'] as List).map((p) => File(p)).toList(),
+            verifiedPhotos: Map<String, bool>.from(value['verifiedPhotos']),
           ),
-        )),
-  );
-}
-
+        ),
+      ),
+    );
+  }
 
   ///////Timer logic here:
 
