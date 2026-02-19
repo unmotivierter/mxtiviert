@@ -47,15 +47,7 @@ class CameraWidget extends StatelessWidget {
 
 late List<CameraDescription> _cameras;
 
-/*Future<void> getCams() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  _cameras = await availableCameras();
-}*/
-
-/// CameraScreen is the Main Application.
 class CameraScreen extends StatefulWidget {
-  /// Default Constructor
   const CameraScreen({super.key, required this.camera, required this.streakItem});
 
   final CameraDescription camera;
@@ -128,13 +120,15 @@ class _CameraScreenState extends State<CameraScreen> {
               context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos = streakPhotos;
               context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos = verifiedPhotos;
             }
-            context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos.add(File(newPath));
-            context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
+            else{
+              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos.add(File(newPath));
+              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
+            }
 
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (context) => DisplayPictureScreen(
-                  imagePath: newPath,
+                  imagePath: newPath, streakName: widget.streakItem.title,
                 ),
               ),
             );
@@ -177,18 +171,39 @@ class _CameraScreenState extends State<CameraScreen> {
 
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  final String streakName;
 
-
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  const DisplayPictureScreen({super.key, required this.imagePath, required this.streakName});
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
+      appBar: AppBar(title: const Text('Picture')),
       body: Image.file(File(imagePath)),
+      floatingActionButton: Row(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context)..pop()..pop();
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),  
+            child: const Text("use photo")
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final file = File(imagePath);
+              await file.delete();
+              context.read<Globals>().getPhotosForItem[streakName]!.photos.removeLast();
+              context.read<Globals>().getPhotosForItem[streakName]!.verifiedPhotos.remove(imagePath);
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),  
+            child: const Text("retake")
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }

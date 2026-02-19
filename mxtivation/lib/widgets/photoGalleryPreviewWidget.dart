@@ -23,7 +23,7 @@ class PhotoGalleryPreviewWidget extends StatelessWidget {
       builder: (context, snapshot) {
         final bool latestImageExists = snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty;
         final latestImagePath = snapshot.data;
-        return InkWell(
+        return latestImageExists? InkWell(
           onTap: () async {
           Navigator.push(
             // ignore: use_build_context_synchronously
@@ -51,6 +51,10 @@ class PhotoGalleryPreviewWidget extends StatelessWidget {
             ),
             child: latestImageExists ? null : Icon(Icons.photo, size: 100),
           ),
+        ) : Container(height: height, width: width, decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            child: Icon(Icons.photo, size: 100)
         );
       }
     );
