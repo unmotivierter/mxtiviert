@@ -149,6 +149,8 @@ class Globals extends ChangeNotifier {
 
   Map<StreakItem, Color> streakColors = {};
 
+  int selectedStreak = 0;
+
   void startTimer(int idx) {
     _timers[idx]?.cancel();
 
@@ -184,6 +186,8 @@ class Globals extends ChangeNotifier {
   //Calendar
   final Map<DateTime, StreakItem> streakDays = {};
 
+  List<DropdownMenuEntry> dropDownbuttons = [];
+
   void updateListFromStreak(StreakItem si) {
     final idx = streakItems.indexOf(si);
     if (idx == -1) return;
@@ -206,5 +210,16 @@ class Globals extends ChangeNotifier {
         Options(luminosity: Luminosity.dark, colorType: ColorType.random),
       );
     }
+  }
+
+  List<DropdownMenuEntry> fillStreakDropdownMenu() {
+    dropDownbuttons.clear();
+    for (int i = 0; i < streakItems.length; i++) {
+      dropDownbuttons.add(
+        DropdownMenuEntry(value: i, label: streakItems[i].title),
+      );
+    }
+
+    return dropDownbuttons;
   }
 }

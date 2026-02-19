@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mxtivation/main.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:mxtivation/widgets/photoGalleryPreviewWidget.dart';
 
 class Calendarscreen extends StatefulWidget {
   const Calendarscreen({super.key});
@@ -17,9 +18,9 @@ class _CalendarscreenState extends State<Calendarscreen> {
   //DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  int selectedStreak = 0;
+  //int selectedStreak = 0;
 
-  List<DropdownMenuEntry> dropDownbuttons = [];
+  //List<DropdownMenuEntry> dropDownbuttons = [];
 
   @override
   void initState() {
@@ -28,10 +29,11 @@ class _CalendarscreenState extends State<Calendarscreen> {
     super.initState();
 
     context.read<Globals>().updateListFromStreak(
-      context.read<Globals>().streakItems[selectedStreak],
+      context.read<Globals>().streakItems[context
+          .read<Globals>()
+          .selectedStreak],
     );
     context.read<Globals>().updateStreakColors();
-    fillStreakDropdownMenu();
   }
 
   bool isStreakDayByCurrentStreak(DateTime _day) {
@@ -60,9 +62,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
     return false;
   }
 
+  /*
   List<DropdownMenuEntry> fillStreakDropdownMenu() {
     for (int i = 0; i < context.read<Globals>().streakItems.length; i++) {
-      dropDownbuttons.add(
+      context.read<Globals>().dropDownbuttons.add(
         DropdownMenuEntry(
           value: i,
           label: context.read<Globals>().streakItems[i].title,
@@ -70,85 +73,104 @@ class _CalendarscreenState extends State<Calendarscreen> {
       );
     }
 
-    return dropDownbuttons;
+    return context.read<Globals>().dropDownbuttons;
   }
+
+  */
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TableCalendar(
-          focusedDay: _focusedDay,
-          firstDay: DateTime(DateTime.now().year - 1),
-          lastDay: DateTime(DateTime.now().year + 1),
-          /*selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) => {
-            setState(() {
-              //debugPrint("$selectedDay, $focusedDay");
-              _focusedDay = focusedDay;
-              _selectedDay = selectedDay;
-            }),
-          },*/
-          calendarFormat: _calendarFormat,
-          onFormatChanged: (format) {
-            setState(() {
-              _calendarFormat = format;
-            });
-          },
-          onPageChanged: (focusedDay) => setState(() {
-            _focusedDay = focusedDay;
-          }),
-          calendarBuilders: CalendarBuilders(
-            defaultBuilder: (context, day, _focusedDay) {
-              if (isStreakDayByList(day)) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color:
-                        context.read<Globals>().streakColors[context
-                            .read<Globals>()
-                            .streakItems[selectedStreak]],
-                    shape: BoxShape.circle,
-                  ),
-                  margin: const EdgeInsets.all(6.0),
-                  alignment: Alignment.center,
-                  child: Text("${day.day}"),
-                );
-              }
-              return null;
-            },
-            todayBuilder: (context, day, _focusedDay) {
-              if (isStreakDayByList(day)) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color:
-                        context.read<Globals>().streakColors[context
-                            .read<Globals>()
-                            .streakItems[selectedStreak]],
-                    shape: BoxShape.circle,
-                  ),
-                  margin: const EdgeInsets.all(6.0),
-                  alignment: Alignment.center,
-                  child: Text("${day.day}"),
-                );
-              }
-              return null;
-            },
-          ),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 2.3,
+            width: MediaQuery.of(context).size.height,
 
-        DropdownMenu(
-          dropdownMenuEntries: dropDownbuttons,
-          initialSelection: dropDownbuttons[0].value,
-          onSelected: (value) => setState(() {
-            selectedStreak = value;
-            context.read<Globals>().updateListFromStreak(
-              context.read<Globals>().streakItems[selectedStreak],
-            );
-          }),
-        ),
-      ],
+            child: Container(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              child: TableCalendar(
+                focusedDay: _focusedDay,
+                firstDay: DateTime(DateTime.now().year - 1),
+                lastDay: DateTime(DateTime.now().year + 1),
+                /*selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) => {
+                  setState(() {
+                    //debugPrint("$selectedDay, $focusedDay");
+                    _focusedDay = focusedDay;
+                    _selectedDay = selectedDay;
+                  }),
+                },*/
+                calendarFormat: _calendarFormat,
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                onPageChanged: (focusedDay) => setState(() {
+                  _focusedDay = focusedDay;
+                }),
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, _focusedDay) {
+                    if (isStreakDayByList(day)) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color:
+                              context.read<Globals>().streakColors[context
+                                  .read<Globals>()
+                                  .streakItems[context
+                                  .read<Globals>()
+                                  .selectedStreak]],
+                          shape: BoxShape.circle,
+                        ),
+                        margin: const EdgeInsets.all(6.0),
+                        alignment: Alignment.center,
+                        child: Text("${day.day}"),
+                      );
+                    }
+                    return null;
+                  },
+                  todayBuilder: (context, day, _focusedDay) {
+                    if (isStreakDayByList(day)) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color:
+                              context.read<Globals>().streakColors[context
+                                  .read<Globals>()
+                                  .streakItems[context
+                                  .read<Globals>()
+                                  .selectedStreak]],
+                          shape: BoxShape.circle,
+                        ),
+                        margin: const EdgeInsets.all(6.0),
+                        alignment: Alignment.center,
+                        child: Text("${day.day}"),
+                      );
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: PhotoGalleryPreviewWidget(
+                height: MediaQuery.of(context).size.height / 3,
+                width: MediaQuery.of(context).size.width / 2.5,
+                streakItemIdx: context.read<Globals>().selectedStreak,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

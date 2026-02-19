@@ -214,6 +214,7 @@ class _AddGoalsState extends State<AddGoals> {
         amount,
       ),
     );
+    context.read<Globals>().fillStreakDropdownMenu();
     Navigator.pop(context);
   }
 
