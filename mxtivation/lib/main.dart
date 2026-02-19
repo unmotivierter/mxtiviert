@@ -213,6 +213,9 @@ class Globals extends ChangeNotifier {
         'intervall': e.intervall.inSeconds,
         'amountPerIntervall': e.amountPerIntervall,
         'amountLeft': e.amountLeft,
+        'dates': e.dates
+          .map((dt) => dt.millisecondsSinceEpoch)
+          .toList(),
       }).toList(),
 
       'photosMap': getPhotosForItem.map(
@@ -272,6 +275,7 @@ class Globals extends ChangeNotifier {
         solo: e['solo'],
         goaler: e['goaler'],
         intervall: Duration(seconds: e['intervall']),
+        dates: (e['dates'] as List).map((ms) => DateTime.fromMicrosecondsSinceEpoch(ms)).toList(),
         amountPerIntervall: e['amountPerIntervall'],
         amountLeft: e['amountLeft'],
       )).toList();
