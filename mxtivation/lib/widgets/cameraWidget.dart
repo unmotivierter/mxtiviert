@@ -1,4 +1,6 @@
 //import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+// ignore_for_file: use_build_context_synchronously, file_names
+
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -33,7 +35,6 @@ class CameraWidget extends StatelessWidget {
         //might need to be changed to _cameras[0] on real devices
         final firstCamera = _cameras[1];
         Navigator.push(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => CameraScreen(camera: firstCamera, streakItem: streakItem,),
@@ -118,7 +119,6 @@ class _CameraScreenState extends State<CameraScreen> {
             if(!context.mounted) return;
             final String newPath = await saveImageToAppFolder(image.path, widget.streakItem.title); 
 
-            // ignore: use_build_context_synchronously
             if(context.read<Globals>().getPhotosForItem[widget.streakItem.title] == null){
               List<File> streakPhotos = getStreakPhotos(context);
               Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
@@ -131,7 +131,6 @@ class _CameraScreenState extends State<CameraScreen> {
             context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos.add(File(newPath));
             context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
 
-            // ignore: use_build_context_synchronously
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (context) => DisplayPictureScreen(
@@ -226,5 +225,5 @@ Future<String> streakToFileName(String dirPath, String streakName, bool incremen
       }
     }
   }
-  return increment ? '$dirPath/$streakName\_${maxNum+1}.png' : '$dirPath/$streakName\_$maxNum.png';
+  return increment ? '$dirPath/${streakName}_${maxNum+1}.png' : '$dirPath/${streakName}_$maxNum.png';
 }

@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:mxtivation/main.dart';
 
@@ -64,6 +65,7 @@ class PhotoGallery extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class PhotoItem extends StatefulWidget {
   PhotoItem({super.key, required this.photo, required this.verified, required this.streakItem});
   final File photo;

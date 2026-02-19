@@ -26,7 +26,6 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: _buildAppBar(context),
         title: Text(
           getAppBarText(context.watch<Globals>().currentTab),
           style: TextStyle(
@@ -122,7 +121,6 @@ class _AppState extends State<App> {
               MaterialPageRoute(builder: (context) => AddGoals()),
             ).then((_) {
               // ignore: use_build_context_synchronously
-
               context.read<Globals>().selectTab(0);
               selectidx = 0;
             });
@@ -160,37 +158,6 @@ class _AppState extends State<App> {
       child: selectedWidget,
     );
   }
-}
-
-Widget _buildAppBar(BuildContext context) {
-  String title = "";
-  switch (context.watch<Globals>().currentTab) {
-    case TabItems.home:
-      title = "Home";
-      break;
-    case TabItems.group:
-      title = "Groups";
-      break;
-    case TabItems.calendar:
-      title = "Calendar";
-      break;
-    case TabItems.settings:
-      title = "Settings";
-      break;
-    case TabItems.add:
-      title = "Add Goal";
-      break;
-  }
-
-  return SizedBox(
-    width: MediaQuery.of(context).size.width,
-    child: Center(
-      child: Text(
-        title,
-        style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
-      ),
-    ),
-  );
 }
 
 String getAppBarText(TabItems currentTab) {

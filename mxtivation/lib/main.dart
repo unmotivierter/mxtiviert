@@ -141,7 +141,7 @@ class Globals extends ChangeNotifier {
 
   ///////Timer logic here:
 
-  Map<int, Timer> _timers = {};
+  final Map<int, Timer> _timers = {};
 
   void startTimer(int idx) {
     _timers[idx]?.cancel();
