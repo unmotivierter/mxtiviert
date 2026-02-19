@@ -97,6 +97,7 @@ class StreakItem {
   Duration intervall;
   int amountPerIntervall;
   int amountLeft;
+  List<DateTime> dates;
 
   StreakItem({
     required this.title,
@@ -108,8 +109,9 @@ class StreakItem {
     this.duration = const Duration(days: 1),
     required this.intervall,
     required this.amountPerIntervall,
-    required this.amountLeft,}
-  );
+    required this.amountLeft,
+    required this.dates,
+  });
 }
 
 class StreakPhotos {
@@ -142,10 +144,11 @@ class Globals extends ChangeNotifier {
       intervall: Duration(hours: 2),
       amountPerIntervall: 1,
       amountLeft: 1,
+      dates: [DateTime(2026, 2, 1)],
     ),
     StreakItem(
       title: "Streak 2",
-      streakCount:1,
+      streakCount: 1,
       streakPbCount: 14,
       groupStreak: 0,
       solo: true,
@@ -154,12 +157,17 @@ class Globals extends ChangeNotifier {
       intervall: Duration(minutes: 2),
       amountPerIntervall: 2,
       amountLeft: 2,
+      dates: [DateTime(2026, 2, 15)],
     ),
   ];
 
   void selectTab(int i) {
     currentTab = TabItems.values[i];
 
+    if (currentTab == TabItems.calendar) {
+      updateListFromStreak(selectedStreak);
+      debugPrint("$selectedStreak");
+    }
     notifyListeners();
   }
 
@@ -191,9 +199,9 @@ class Globals extends ChangeNotifier {
     streakItems.add(item);
     notifyListeners();
   }
-  
+
   //saving data to files:
-  Future<void> saveData() async{
+  Future<void> saveData() async {
     final data = {
       'streakItems': streakItems.map((e) => {
         'title': e.title,
@@ -207,15 +215,14 @@ class Globals extends ChangeNotifier {
         'amountLeft': e.amountLeft,
       }).toList(),
 
-      'photosMap': getPhotosForItem.map((key, value) => MapEntry(
-        key, 
-        {
-          'photoPaths': value.photos.map((f)=>f.path).toList(),
+      'photosMap': getPhotosForItem.map(
+        (key, value) => MapEntry(key, {
+          'photoPaths': value.photos.map((f) => f.path).toList(),
           'verifiedPhotos': value.verifiedPhotos,
-        },
-      )),
+        }),
+      ),
     };
-    
+
     await box.put('appData', data);
   }
 
@@ -252,10 +259,9 @@ class Globals extends ChangeNotifier {
     return box.get('appData');
   }*/
 
-
   Future<void> loadData() async {
-  final data = box.get('appData');
-  if (data == null) return; // nothing saved yet
+    final data = box.get('appData');
+    if (data == null) return; // nothing saved yet
 
   // Rebuild streakItems list
   streakItems = (data['streakItems'] as List).map((e) => StreakItem(
@@ -270,21 +276,19 @@ class Globals extends ChangeNotifier {
         amountLeft: e['amountLeft'],
       )).toList();
 
-  // Rebuild getPhotosForItem map
-  getPhotosForItem = Map<String, StreakPhotos>.from(
-    (data['photosMap'] as Map).map((key, value) => MapEntry(
+    // Rebuild getPhotosForItem map
+    getPhotosForItem = Map<String, StreakPhotos>.from(
+      (data['photosMap'] as Map).map(
+        (key, value) => MapEntry(
           key,
           StreakPhotos(
-            photos: (value['photoPaths'] as List)
-                .map((p) => File(p))
-                .toList(),
-            verifiedPhotos:
-                Map<String, bool>.from(value['verifiedPhotos']),
+            photos: (value['photoPaths'] as List).map((p) => File(p)).toList(),
+            verifiedPhotos: Map<String, bool>.from(value['verifiedPhotos']),
           ),
-        )),
-  );
-}
-
+        ),
+      ),
+    );
+  }
 
   ///////Timer logic here:
 
@@ -326,27 +330,41 @@ class Globals extends ChangeNotifier {
 
     _timers[idx]?.cancel();
     startTimer(idx);
-    updateListFromStreak(streakItems[selectedStreak]);
+    updateListFromStreak(selectedStreak);
     notifyListeners();
   }
 
   //Calendar
-  final Map<DateTime, StreakItem> streakDays = {};
+  final Map<DateTime, Set<int>> streakDays = {};
+
   int selectedStreak = 0;
   List<DropdownMenuEntry> dropDownbuttons = [];
 
-  void updateListFromStreak(StreakItem si) {
-    final idx = streakItems.indexOf(si);
-    if (idx == -1) return;
-
+  void updateListFromStreak(int streakIdx) {
+    final si = streakItems[streakIdx];
     final currentDate = DateTime.now();
-    for (int i = 0; i < streakItems[idx].streakCount; i++) {
-      final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
 
-      //streakDays.addEntries([MapEntry(streakDate, si)]);
-      streakDays[streakDate] = si;
-      //debugPrint("${streakDays}");
+    for (int i = 0; i < si.streakCount; i++) {
+      final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
+      streakItems[streakIdx].dates.add(streakDate);
+
+      addNewDate(streakIdx, streakDate);
     }
+
+    for (int i = 0; i < streakItems[streakIdx].dates.length; i++) {
+      addNewDate(streakIdx, streakItems[streakIdx].dates[i]);
+    }
+
+    notifyListeners();
+  }
+
+  void addNewDate(int streakIdx, DateTime date) {
+    final normalizedDate = normalizeDate(date);
+
+    streakDays.putIfAbsent(normalizedDate, () => <int>{});
+
+    streakDays[normalizedDate]!.add(streakIdx);
+
     notifyListeners();
   }
 

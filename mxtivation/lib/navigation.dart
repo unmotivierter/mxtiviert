@@ -94,9 +94,7 @@ class _AppState extends State<App> {
                 onSelected: (value) => setState(() {
                   context.read<Globals>().selectedStreak = value;
                   context.read<Globals>().updateListFromStreak(
-                    context.read<Globals>().streakItems[context
-                        .read<Globals>()
-                        .selectedStreak],
+                    context.read<Globals>().selectedStreak,
                   );
                 }),
               ),

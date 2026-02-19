@@ -12,3 +12,44 @@ Colorscheme:
 
 browse google icons:
   https://fonts.google.com/icons
+
+
+
+class MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  late Globals globals; // store reference
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Safe to get context here using addPostFrameCallback
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globals = context.read<Globals>();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      saveDataBeforeExit();
+    }
+  }
+
+  void saveDataBeforeExit() {
+    // Now you can safely use your provider
+    globals.updateListFromStreak(globals.streakItems[globals.selectedStreak]);
+    print("Saved streak data!");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(); // your app here
+  }
+}
