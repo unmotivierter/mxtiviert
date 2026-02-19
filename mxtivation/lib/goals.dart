@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mxtivation/navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:numberpicker/numberpicker.dart';
 
@@ -76,9 +75,9 @@ class _AddGoalsState extends State<AddGoals> {
                     DropdownMenuEntry(value: "gr2", label: "Group1"),
                     DropdownMenuEntry(value: "gr3", label: "Group2"),
                   ],
-                  onSelected: (ValueNotifier) {
+                  onSelected: (valueNotifier) {
                     setState(() {
-                      group = ValueNotifier.toString();
+                      group = valueNotifier.toString();
                     });
                   },
                 ),

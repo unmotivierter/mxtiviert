@@ -4,7 +4,6 @@ import 'package:mxtivation/widgets/cameraWidget.dart';
 import 'package:provider/provider.dart';
 import 'widgets/streakWidget.dart';
 import 'widgets/photoGalleryPreviewWidget.dart';
-import 'package:mxtivation/main.dart';
 
 class StreakScreenSp extends StatelessWidget {
   const StreakScreenSp({super.key, required this.streakItemIdx});

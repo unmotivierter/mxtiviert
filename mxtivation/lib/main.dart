@@ -145,7 +145,8 @@ class Globals extends ChangeNotifier {
 
   ///////Timer logic here:
 
-  Map<int, Timer> _timers = {};
+  final Map<int, Timer> _timers = {};
+
   Map<StreakItem, Color> streakColors = {};
 
   void startTimer(int idx) {

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'main.dart';
-import 'navigation.dart';
 import 'streak_sp.dart';
 
 class StreakScroller extends StatefulWidget {
@@ -193,14 +192,14 @@ class StreakScrollerItem extends StatelessWidget {
 }
 
 class TimerWidget extends StatefulWidget {
-  TimerWidget({
+  const TimerWidget({
     super.key,
     required this.dura,
     required this.itemIndex,
     required this.callback,
   });
 
-  final dura;
+  final Duration dura;
   final int itemIndex;
   final VoidCallback callback;
   Duration getDura() {
@@ -218,6 +217,7 @@ class _TimerWidgetState extends State<TimerWidget> {
 
     // Access provider correctly
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       context.read<Globals>().startTimer(widget.itemIndex);
     });
   }
