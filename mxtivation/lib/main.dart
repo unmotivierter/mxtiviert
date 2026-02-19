@@ -290,6 +290,9 @@ class Globals extends ChangeNotifier {
     if (idx == -1) return;
 
     final currentDate = DateTime.now();
+
+    streakDays[normalizeDate(DateTime.now().subtract(Duration(days: 30)))] = si;
+
     for (int i = 0; i < streakItems[idx].streakCount; i++) {
       final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
 
