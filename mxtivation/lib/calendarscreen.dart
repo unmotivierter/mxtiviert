@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mxtivation/main.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +14,12 @@ class Calendarscreen extends StatefulWidget {
 
 class _CalendarscreenState extends State<Calendarscreen> {
   DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime.now();
+  //DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
+
+  int selectedStreak = 0;
+
+  List<DropdownMenuEntry> dropDownbuttons = [];
 
   @override
   void initState() {
@@ -22,8 +28,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
     super.initState();
 
     context.read<Globals>().updateListFromStreak(
-      context.read<Globals>().streakItems[0],
+      context.read<Globals>().streakItems[selectedStreak],
     );
+    context.read<Globals>().updateStreakColors();
+    fillStreakDropdownMenu();
   }
 
   bool isStreakDayByCurrentStreak(DateTime _day) {
@@ -52,14 +60,9 @@ class _CalendarscreenState extends State<Calendarscreen> {
     return false;
   }
 
-  StreakItem getStreakForDay(DateTime day) {
-    return context.read<Globals>().streakDays[day]!;
-  }
-
   List<DropdownMenuEntry> fillStreakDropdownMenu() {
-    List<DropdownMenuEntry> buttons = [];
     for (int i = 0; i < context.read<Globals>().streakItems.length; i++) {
-      buttons.add(
+      dropDownbuttons.add(
         DropdownMenuEntry(
           value: i,
           label: context.read<Globals>().streakItems[i].title,
@@ -67,7 +70,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
       );
     }
 
-    return buttons;
+    return dropDownbuttons;
   }
 
   @override
@@ -102,9 +105,15 @@ class _CalendarscreenState extends State<Calendarscreen> {
               if (isStreakDayByList(day)) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.amber,
+                    color:
+                        context.read<Globals>().streakColors[context
+                            .read<Globals>()
+                            .streakItems[selectedStreak]],
                     shape: BoxShape.circle,
                   ),
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  child: Text("${day.day}"),
                 );
               }
               return null;
@@ -113,9 +122,15 @@ class _CalendarscreenState extends State<Calendarscreen> {
               if (isStreakDayByList(day)) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.amber,
+                    color:
+                        context.read<Globals>().streakColors[context
+                            .read<Globals>()
+                            .streakItems[selectedStreak]],
                     shape: BoxShape.circle,
                   ),
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  child: Text("${day.day}"),
                 );
               }
               return null;
@@ -123,7 +138,16 @@ class _CalendarscreenState extends State<Calendarscreen> {
           ),
         ),
 
-        DropdownMenu(dropdownMenuEntries: fillStreakDropdownMenu()),
+        DropdownMenu(
+          dropdownMenuEntries: dropDownbuttons,
+          initialSelection: dropDownbuttons[0].value,
+          onSelected: (value) => setState(() {
+            selectedStreak = value;
+            context.read<Globals>().updateListFromStreak(
+              context.read<Globals>().streakItems[selectedStreak],
+            );
+          }),
+        ),
       ],
     );
   }

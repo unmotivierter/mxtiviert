@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter_randomcolor/flutter_randomcolor.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
@@ -18,11 +19,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDir = await getApplicationDocumentsDirectory();
   final imageDir = Directory(path.join(appDir.path, 'images'));
-  if(! await imageDir.exists()){
+  if (!await imageDir.exists()) {
     await imageDir.create(recursive: true);
   }
   runApp(
-    ChangeNotifierProvider(create: (context) => Globals(imageDir: imageDir), child: MainApp()),
+    ChangeNotifierProvider(
+      create: (context) => Globals(imageDir: imageDir),
+      child: MainApp(),
+    ),
   );
 }
 
@@ -66,7 +70,7 @@ class StreakItem {
   );
 }
 
-class StreakPhotos{
+class StreakPhotos {
   List<File> photos = [];
   Map<String, bool> verifiedPhotos = {};
 }
@@ -143,6 +147,8 @@ class Globals extends ChangeNotifier {
 
   final Map<int, Timer> _timers = {};
 
+  Map<StreakItem, Color> streakColors = {};
+
   void startTimer(int idx) {
     _timers[idx]?.cancel();
 
@@ -190,6 +196,15 @@ class Globals extends ChangeNotifier {
       streakDays[streakDate] = si;
       //debugPrint("${streakDays}");
       //notifyListeners();
+    }
+  }
+
+  void updateStreakColors() {
+    for (StreakItem si in streakItems) {
+      if (streakColors[si] != null) return;
+      streakColors[si] = RandomColor.getColorObject(
+        Options(luminosity: Luminosity.dark, colorType: ColorType.random),
+      );
     }
   }
 }
