@@ -27,12 +27,13 @@ class _CalendarscreenState extends State<Calendarscreen> {
     // TODO: implement initState
 
     super.initState();
-
+    /*
     context.read<Globals>().updateListFromStreak(
       context.read<Globals>().streakItems[context
           .read<Globals>()
           .selectedStreak],
     );
+    */
     context.read<Globals>().updateStreakColors();
   }
 
@@ -52,11 +53,19 @@ class _CalendarscreenState extends State<Calendarscreen> {
     return false;
   }
 
-  bool isStreakDayByList(DateTime day) {
+  bool isStreakDayByList(DateTime day, int sId) {
     //debugPrint("${context.read<Globals>().streakDays[day]}");
     //context.read<Globals>().UpdateList(context.read<Globals>().streakItems[0]);
     //Globals().UpdateList(context.read<Globals>().streakItems[0]);
-    if (context.read<Globals>().streakDays[normalizeDate(day)] != null) {
+    /*
+    context.read<Globals>().updateListFromStreak(
+      context.watch<Globals>().streakItems[context
+          .read<Globals>()
+          .selectedStreak],
+    );*/
+    if (context.read<Globals>().streakDays[day] != null &&
+        context.read<Globals>().streakDays[day] ==
+            context.read<Globals>().streakItems[sId]) {
       return true;
     }
     return false;
@@ -115,7 +124,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
                 }),
                 calendarBuilders: CalendarBuilders(
                   defaultBuilder: (context, day, _focusedDay) {
-                    if (isStreakDayByList(day)) {
+                    if (isStreakDayByList(
+                      day,
+                      context.read<Globals>().selectedStreak,
+                    )) {
                       return Container(
                         decoration: BoxDecoration(
                           color:
@@ -134,7 +146,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
                     return null;
                   },
                   todayBuilder: (context, day, _focusedDay) {
-                    if (isStreakDayByList(day)) {
+                    if (isStreakDayByList(
+                      day,
+                      context.read<Globals>().selectedStreak,
+                    )) {
                       return Container(
                         decoration: BoxDecoration(
                           color:
@@ -150,7 +165,11 @@ class _CalendarscreenState extends State<Calendarscreen> {
                         child: Text("${day.day}"),
                       );
                     }
-                    return null;
+                    return Container(
+                      margin: const EdgeInsets.all(6.0),
+                      alignment: Alignment.center,
+                      child: Text("${day.day}"),
+                    );
                   },
                 ),
               ),
