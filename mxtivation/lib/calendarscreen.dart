@@ -19,6 +19,8 @@ class _CalendarscreenState extends State<Calendarscreen> {
 
   int selectedStreak = 0;
 
+  List<DropdownMenuEntry> dropDownbuttons = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -29,6 +31,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
       context.read<Globals>().streakItems[selectedStreak],
     );
     context.read<Globals>().updateStreakColors();
+    fillStreakDropdownMenu();
   }
 
   bool isStreakDayByCurrentStreak(DateTime _day) {
@@ -58,9 +61,8 @@ class _CalendarscreenState extends State<Calendarscreen> {
   }
 
   List<DropdownMenuEntry> fillStreakDropdownMenu() {
-    List<DropdownMenuEntry> buttons = [];
     for (int i = 0; i < context.read<Globals>().streakItems.length; i++) {
-      buttons.add(
+      dropDownbuttons.add(
         DropdownMenuEntry(
           value: i,
           label: context.read<Globals>().streakItems[i].title,
@@ -68,7 +70,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
       );
     }
 
-    return buttons;
+    return dropDownbuttons;
   }
 
   @override
@@ -109,6 +111,9 @@ class _CalendarscreenState extends State<Calendarscreen> {
                             .streakItems[selectedStreak]],
                     shape: BoxShape.circle,
                   ),
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  child: Text("${day.day}"),
                 );
               }
               return null;
@@ -123,6 +128,9 @@ class _CalendarscreenState extends State<Calendarscreen> {
                             .streakItems[selectedStreak]],
                     shape: BoxShape.circle,
                   ),
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  child: Text("${day.day}"),
                 );
               }
               return null;
@@ -131,7 +139,8 @@ class _CalendarscreenState extends State<Calendarscreen> {
         ),
 
         DropdownMenu(
-          dropdownMenuEntries: fillStreakDropdownMenu(),
+          dropdownMenuEntries: dropDownbuttons,
+          initialSelection: dropDownbuttons[0].value,
           onSelected: (value) => setState(() {
             selectedStreak = value;
             context.read<Globals>().updateListFromStreak(
