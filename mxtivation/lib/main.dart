@@ -201,6 +201,7 @@ class Globals extends ChangeNotifier {
 
   void updateStreakColors() {
     for (StreakItem si in streakItems) {
+      if (streakColors[si] != null) return;
       streakColors[si] = RandomColor.getColorObject(
         Options(luminosity: Luminosity.dark, colorType: ColorType.random),
       );
