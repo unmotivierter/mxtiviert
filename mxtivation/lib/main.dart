@@ -42,6 +42,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    updateTime(context); 
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(scheme: FlexScheme.flutterDash),
@@ -50,6 +53,36 @@ class MainApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       home: App(),
     );
+  }
+
+  void updateTime(BuildContext context) async {
+    final Map<String, int> timers = await context.read<Globals>().loadTime(); 
+    final int globalTimeThen = await context.read<Globals>().loadGlobalTime();
+    final int globalTimeNow = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    int timeDiff = globalTimeNow - globalTimeThen;
+    final items  = context.read<Globals>().streakItems;
+
+    for(var entry in timers.entries){
+      int overflows = 0;
+      int remaining = entry.value;     
+
+      while((remaining - timeDiff) < 0){
+        timeDiff -= entry.value;
+        overflows++;
+      }
+      remaining = entry.value - timeDiff;
+
+      for(int i = 0; i < items.length; i++){
+        if(items[i].title == entry.key){
+          context.read<Globals>().streakItems[i].duration = Duration(seconds: remaining);
+          if(overflows > 0){
+            context.read<Globals>().streakItems[i].streakCount = 0;
+          }
+        }
+      }
+    }
+    
+    context.read<Globals>().saveTime();
   }
 }
 
@@ -72,7 +105,7 @@ class StreakItem {
     required this.groupStreak,
     required this.solo,
     required this.goaler,
-    required this.duration,
+    this.duration = const Duration(days: 1),
     required this.intervall,
     required this.amountPerIntervall,
     required this.amountLeft,}
@@ -118,7 +151,7 @@ class Globals extends ChangeNotifier {
       solo: true,
       goaler: "PePe",
       duration: Duration(seconds: 10),
-      intervall: Duration(seconds: 10),
+      intervall: Duration(minutes: 2),
       amountPerIntervall: 2,
       amountLeft: 2,
     ),
@@ -169,7 +202,6 @@ class Globals extends ChangeNotifier {
         'groupStreak': e.groupStreak,
         'solo': e.solo,
         'goaler': e.goaler,
-        'duration': e.duration.inSeconds,
         'intervall': e.intervall.inSeconds,
         'amountPerIntervall': e.amountPerIntervall,
         'amountLeft': e.amountLeft,
@@ -185,6 +217,34 @@ class Globals extends ChangeNotifier {
     };
     
     await box.put('appData', data);
+  }
+
+  Future<void> saveTime() async{
+    final streakTimers = {
+      for (var item in streakItems)
+        item.title: item.duration.inSeconds, // store timer as seconds
+    };
+
+    final dataToSave = {
+      'streakTimers': streakTimers,
+      'CurrentTime': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    };
+
+    await box.put('timerData', dataToSave);
+  }
+
+  Future<Map<String, int>> loadTime() async{
+    final data = box.get('timerData');
+    if (data == null) return {}; 
+
+    return Map<String, int>.from(data['streakTimers']);
+  }
+  
+  Future<int> loadGlobalTime() async {
+    final data = box.get('timerData');
+    if (data == null) return 0;
+
+    return data['CurrentTime'];
   }
 
   //for testing porpuses
@@ -205,7 +265,6 @@ class Globals extends ChangeNotifier {
         groupStreak: e['groupStreak'],
         solo: e['solo'],
         goaler: e['goaler'],
-        duration: Duration(seconds: e['duration']),
         intervall: Duration(seconds: e['intervall']),
         amountPerIntervall: e['amountPerIntervall'],
         amountLeft: e['amountLeft'],

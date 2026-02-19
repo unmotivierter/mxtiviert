@@ -40,7 +40,6 @@ class _StreakScrollerState extends State<StreakScroller> {
 
   @override
   Widget build(BuildContext context) {
-
     myCallback = () {
       setState(() {
         temp = true;
