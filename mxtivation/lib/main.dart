@@ -64,6 +64,7 @@ class StreakItem {
   Duration intervall;
   int amountPerIntervall;
   int amountLeft;
+  List<DateTime> dates;
 
   StreakItem({
     required this.title,
@@ -76,6 +77,7 @@ class StreakItem {
     required this.intervall,
     required this.amountPerIntervall,
     required this.amountLeft,
+    required this.dates,
   });
 }
 
@@ -109,6 +111,7 @@ class Globals extends ChangeNotifier {
       intervall: Duration(hours: 2),
       amountPerIntervall: 1,
       amountLeft: 1,
+      dates: [DateTime(2026, 2, 1)],
     ),
     StreakItem(
       title: "Streak 2",
@@ -121,6 +124,7 @@ class Globals extends ChangeNotifier {
       intervall: Duration(seconds: 10),
       amountPerIntervall: 2,
       amountLeft: 2,
+      dates: [DateTime(2026, 2, 15)],
     ),
   ];
 
@@ -217,6 +221,7 @@ class Globals extends ChangeNotifier {
             intervall: Duration(seconds: e['intervall']),
             amountPerIntervall: e['amountPerIntervall'],
             amountLeft: e['amountLeft'],
+            dates: e['dates'],
           ),
         )
         .toList();
@@ -289,12 +294,15 @@ class Globals extends ChangeNotifier {
     final si = streakItems[streakIdx];
     final currentDate = DateTime.now();
 
-    addNewDate(0, DateTime(2026, 1, 16));
-
     for (int i = 0; i < si.streakCount; i++) {
       final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
+      streakItems[streakIdx].dates.add(streakDate);
 
       addNewDate(streakIdx, streakDate);
+    }
+
+    for (int i = 0; i < streakItems[streakIdx].dates.length; i++) {
+      addNewDate(streakIdx, streakItems[streakIdx].dates[i]);
     }
 
     notifyListeners();

@@ -93,7 +93,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height / 2.3,
-            width: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
 
             child: Container(
               color: Theme.of(context).colorScheme.surfaceContainer,
@@ -166,7 +166,10 @@ class _CalendarscreenState extends State<Calendarscreen> {
                     return Container(
                       margin: const EdgeInsets.all(6.0),
                       alignment: Alignment.center,
-                      child: Text("${day.day}"),
+                      child: Text(
+                        "${day.day}",
+                        style: TextStyle(color: Colors.red),
+                      ),
                     );
                   },
                 ),

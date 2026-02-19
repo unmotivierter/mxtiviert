@@ -213,6 +213,7 @@ class _AddGoalsState extends State<AddGoals> {
         intervall: Duration(hours: hours, days: days, minutes: minutes),
         amountPerIntervall: amount,
         amountLeft: amount,
+        dates: [DateTime(0, 0, 0)],
       ),
     );
     context.read<Globals>().fillStreakDropdownMenu();
