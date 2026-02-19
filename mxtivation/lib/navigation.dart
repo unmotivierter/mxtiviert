@@ -23,6 +23,13 @@ class _AppState extends State<App> {
   //add sort by time left
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<Globals>().fillStreakDropdownMenu();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +80,25 @@ class _AppState extends State<App> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
+              ),
+            ),
+          if (context.watch<Globals>().currentTab == TabItems.calendar)
+            Align(
+              alignment: Alignment.topCenter,
+              child: DropdownMenu(
+                dropdownMenuEntries: context.read<Globals>().dropDownbuttons,
+                initialSelection: context
+                    .read<Globals>()
+                    .dropDownbuttons[0]
+                    .value,
+                onSelected: (value) => setState(() {
+                  context.read<Globals>().selectedStreak = value;
+                  context.read<Globals>().updateListFromStreak(
+                    context.read<Globals>().streakItems[context
+                        .read<Globals>()
+                        .selectedStreak],
+                  );
+                }),
               ),
             ),
         ],
