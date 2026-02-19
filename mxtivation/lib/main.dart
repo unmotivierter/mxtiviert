@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
 import 'navigation.dart';
 import 'comparefunctions.dart';
 
@@ -10,10 +13,15 @@ enum TabItems { home, group, add, calendar, settings }
 
 enum Sortby { sDesc, sAsc, sPbDesc, sPbAsc, nDesc, nAsc }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final appDir = await getApplicationDocumentsDirectory();
+  final imageDir = Directory(path.join(appDir.path, 'images'));
+  if(! await imageDir.exists()){
+    await imageDir.create(recursive: true);
+  }
   runApp(
-    ChangeNotifierProvider(create: (context) => Globals(), child: MainApp()),
+    ChangeNotifierProvider(create: (context) => Globals(imageDir: imageDir), child: MainApp()),
   );
 }
 
@@ -43,7 +51,7 @@ class StreakItem {
   Duration duration;
   Duration intervall;
   int amountPerIntervall;
-  //add time left and time interval
+
   StreakItem(
     this.title,
     this.streakCount,
@@ -57,7 +65,16 @@ class StreakItem {
   );
 }
 
+class StreakPhotos{
+  List<File> photos = [];
+  Map<String, bool> verifiedPhotos = {};
+}
+
 class Globals extends ChangeNotifier {
+  Globals({required this.imageDir});
+  Directory imageDir = Directory('');
+  Map<String, StreakPhotos> getPhotosForItem = {};
+
   TabItems currentTab = TabItems.home;
 
   int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;

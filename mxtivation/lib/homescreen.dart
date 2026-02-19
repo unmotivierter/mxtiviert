@@ -55,7 +55,7 @@ class _StreakScrollerState extends State<StreakScroller> {
           context,
           MaterialPageRoute(
             builder: (context) => StreakScreenSp(
-              streakItem: context.watch<Globals>().streakItems[i],
+              streakItemIdx: i,
             ),
           ),
         );

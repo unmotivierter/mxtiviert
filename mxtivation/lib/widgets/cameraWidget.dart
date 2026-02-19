@@ -3,14 +3,16 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:mxtivation/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 
 class CameraWidget extends StatelessWidget {
-  const CameraWidget({super.key, required this.height, required this.width, required this.streakName});
+  const CameraWidget({super.key, required this.height, required this.width, required this.streakItem});
   final double height;
   final double width;
-  final String streakName;
+  final StreakItem streakItem;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class CameraWidget extends StatelessWidget {
           // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) => CameraScreen(camera: firstCamera, streakName: streakName,),
+            builder: (context) => CameraScreen(camera: firstCamera, streakItem: streakItem,),
           ),
         );
       },
@@ -53,10 +55,10 @@ late List<CameraDescription> _cameras;
 /// CameraScreen is the Main Application.
 class CameraScreen extends StatefulWidget {
   /// Default Constructor
-  const CameraScreen({super.key, required this.camera, required this.streakName});
+  const CameraScreen({super.key, required this.camera, required this.streakItem});
 
   final CameraDescription camera;
-  final streakName;
+  final StreakItem streakItem;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -114,7 +116,20 @@ class _CameraScreenState extends State<CameraScreen> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
             if(!context.mounted) return;
-            final String newPath = await saveImageToAppFolder(image.path, widget.streakName); 
+            final String newPath = await saveImageToAppFolder(image.path, widget.streakItem.title); 
+
+            // ignore: use_build_context_synchronously
+            if(context.read<Globals>().getPhotosForItem[widget.streakItem.title] == null){
+              List<File> streakPhotos = getStreakPhotos(context);
+              Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
+              context.read<Globals>().getPhotosForItem.addEntries([
+                MapEntry(widget.streakItem.title, StreakPhotos()),
+              ]);
+              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos = streakPhotos;
+              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos = verifiedPhotos;
+            }
+            context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos.add(File(newPath));
+            context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
 
             // ignore: use_build_context_synchronously
             await Navigator.of(context).push(
@@ -132,6 +147,33 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
     );
   }
+
+
+
+  List<File> getStreakPhotos(BuildContext context){
+    final String streakName = widget.streakItem.title.replaceAll(' ', '_');
+    final imageDir = context.read<Globals>().imageDir;
+    final List<File> matchingFiles = [];
+    final regex = RegExp('^${RegExp.escape(streakName)}_(\\d+)\\.png\$');
+    for(final entity in imageDir.listSync()){
+      if(entity is File){
+        final fileName = entity.uri.pathSegments.last;
+        final match = regex.firstMatch(fileName);
+        if(match != null){
+          matchingFiles.add(entity);
+        }
+      }
+    }
+    matchingFiles.sort((a, b) {
+      final aName = a.uri.pathSegments.last;
+      final bName = b.uri.pathSegments.last;
+      final aNumber = int.parse(regex.firstMatch(aName)!.group(1)!);
+      final bNumber = int.parse(regex.firstMatch(bName)!.group(1)!);
+
+      return aNumber.compareTo(bNumber);
+    });
+    return matchingFiles;
+  }
 }
 
 class DisplayPictureScreen extends StatelessWidget {
@@ -143,7 +185,6 @@ class DisplayPictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(imagePath);
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`

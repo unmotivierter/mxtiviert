@@ -3,18 +3,21 @@ import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 import 'cameraWidget.dart';
+import 'photoGallery.dart';
+import 'package:mxtivation/main.dart';
 
 class PhotoGalleryPreviewWidget extends StatelessWidget {
-  const PhotoGalleryPreviewWidget({super.key, required this.height, required this.width, required this.streakName});
+  const PhotoGalleryPreviewWidget({super.key, required this.height, required this.width, required this.streakItemIdx});
   final double height;
   final double width;
-  final String streakName;
+  final int streakItemIdx;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: getLatestImagePath(streakName),
+      future: getLatestImagePath(context.read<Globals>().streakItems[streakItemIdx].title),
       builder: (context, snapshot) {
         final bool latestImageExists = snapshot.hasData && snapshot.data != null && snapshot.data!.isNotEmpty;
         final latestImagePath = snapshot.data;
@@ -24,7 +27,10 @@ class PhotoGalleryPreviewWidget extends StatelessWidget {
             // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(
-              builder: (context) => Placeholder(),
+              builder: (context) {
+                //add check if no photos then do normal container
+                return PhotoGallery(streakItem: context.read<Globals>().streakItems[streakItemIdx],);
+              },
             ),
           );
           },
