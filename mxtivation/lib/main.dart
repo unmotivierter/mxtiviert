@@ -5,6 +5,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'navigation.dart';
 import 'comparefunctions.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 enum TabItems { home, group, add, calendar, settings }
 
@@ -155,5 +156,23 @@ class Globals extends ChangeNotifier {
     _timers[idx]?.cancel();
     startTimer(idx);
     notifyListeners();
+  }
+
+  //Calendar
+  final Map<DateTime, StreakItem> streakDays = {};
+
+  void updateListFromStreak(StreakItem si) {
+    final idx = streakItems.indexOf(si);
+    if (idx == -1) return;
+
+    final currentDate = DateTime.now();
+    for (int i = 0; i < streakItems[idx].streakCount; i++) {
+      final streakDate = normalizeDate(currentDate.subtract(Duration(days: i)));
+
+      //streakDays.addEntries([MapEntry(streakDate, si)]);
+      streakDays[streakDate] = si;
+      //debugPrint("${streakDays}");
+      //notifyListeners();
+    }
   }
 }

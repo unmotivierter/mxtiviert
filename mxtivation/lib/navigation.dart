@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'homescreen.dart';
 import 'main.dart';
 import 'goals.dart';
+import 'calendarscreen.dart';
 
 typedef CompareFunction = int Function(dynamic a, dynamic b);
 
@@ -135,18 +136,22 @@ class _AppState extends State<App> {
     Widget selectedWidget;
     switch (context.watch<Globals>().currentTab) {
       case TabItems.home:
-        selectedWidget = StreakScroller(streakItems: context.read<Globals>().streakItems);
+        selectedWidget = StreakScroller(
+          streakItems: context.read<Globals>().streakItems,
+        );
 
       case TabItems.group:
         selectedWidget = Text("The group screen");
 
       case TabItems.calendar:
-        selectedWidget = Text("Hi");
+        selectedWidget = Calendarscreen();
 
       case TabItems.settings:
         selectedWidget = Text("Settings");
       case TabItems.add:
-        selectedWidget = StreakScroller(streakItems: context.read<Globals>().streakItems);
+        selectedWidget = StreakScroller(
+          streakItems: context.read<Globals>().streakItems,
+        );
     }
 
     return Container(
