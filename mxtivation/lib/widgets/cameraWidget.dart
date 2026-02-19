@@ -11,10 +11,10 @@ import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
 class CameraWidget extends StatelessWidget {
-  const CameraWidget({super.key, required this.height, required this.width, required this.streakItem});
+  const CameraWidget({super.key, required this.height, required this.width, required this.streakItemIdx});
   final double height;
   final double width;
-  final StreakItem streakItem;
+  final int streakItemIdx;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class CameraWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CameraScreen(camera: firstCamera, streakItem: streakItem,),
+            builder: (context) => CameraScreen(camera: firstCamera, streakItemIdx: streakItemIdx,),
           ),
         );
       },
@@ -48,10 +48,10 @@ class CameraWidget extends StatelessWidget {
 late List<CameraDescription> _cameras;
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key, required this.camera, required this.streakItem});
+  const CameraScreen({super.key, required this.camera, required this.streakItemIdx});
 
   final CameraDescription camera;
-  final StreakItem streakItem;
+  final int streakItemIdx;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -78,6 +78,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final streakItem = context.read<Globals>().streakItems[widget.streakItemIdx];
     return Scaffold(
       body: Stack(
         children: [
@@ -109,26 +110,26 @@ class _CameraScreenState extends State<CameraScreen> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
             if(!context.mounted) return;
-            final String newPath = await saveImageToAppFolder(image.path, widget.streakItem.title); 
+            final String newPath = await saveImageToAppFolder(image.path, streakItem.title); 
 
-            if(context.read<Globals>().getPhotosForItem[widget.streakItem.title] == null){
-              List<File> streakPhotos = getStreakPhotos(context);
+            if(context.read<Globals>().getPhotosForItem[streakItem.title] == null){
+              List<File> streakPhotos = getStreakPhotos(context, streakItem.title);
               Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
               context.read<Globals>().getPhotosForItem.addEntries([
-                MapEntry(widget.streakItem.title, StreakPhotos()),
+                MapEntry(streakItem.title, StreakPhotos()),
               ]);
-              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos = streakPhotos;
-              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos = verifiedPhotos;
+              context.read<Globals>().getPhotosForItem[streakItem.title]!.photos = streakPhotos;
+              context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos = verifiedPhotos;
             }
             else{
-              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.photos.add(File(newPath));
-              context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
+              context.read<Globals>().getPhotosForItem[streakItem.title]!.photos.add(File(newPath));
+              context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
             }
 
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (context) => DisplayPictureScreen(
-                  imagePath: newPath, streakName: widget.streakItem.title,
+                  imagePath: newPath, streakName: streakItem.title, streakItemIdx: widget.streakItemIdx,
                 ),
               ),
             );
@@ -143,8 +144,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
 
 
-  List<File> getStreakPhotos(BuildContext context){
-    final String streakName = widget.streakItem.title.replaceAll(' ', '_');
+  List<File> getStreakPhotos(BuildContext context, String streakName){
+    streakName = streakName.replaceAll(' ', '_');
     final imageDir = context.read<Globals>().imageDir;
     final List<File> matchingFiles = [];
     final regex = RegExp('^${RegExp.escape(streakName)}_(\\d+)\\.png\$');
@@ -172,8 +173,9 @@ class _CameraScreenState extends State<CameraScreen> {
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
   final String streakName;
+  final int streakItemIdx;
 
-  const DisplayPictureScreen({super.key, required this.imagePath, required this.streakName});
+  const DisplayPictureScreen({super.key, required this.imagePath, required this.streakName, required this.streakItemIdx});
 
 
   @override
@@ -185,6 +187,12 @@ class DisplayPictureScreen extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
+              if(context.read<Globals>().streakItems[streakItemIdx].amountLeft > 0){
+                context.read<Globals>().streakItems[streakItemIdx].amountLeft--;
+                if(context.read<Globals>().streakItems[streakItemIdx].amountLeft == 0){
+                  context.read<Globals>().streakItems[streakItemIdx].streakCount++;
+                }
+              }
               Navigator.of(context)..pop()..pop();
             },
             style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),  

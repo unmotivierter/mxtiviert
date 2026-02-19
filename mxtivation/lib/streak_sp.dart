@@ -46,7 +46,7 @@ class StreakScreenSp extends StatelessWidget {
               //Placeholder
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CameraWidget(height: wHeight, width: wWidth, streakItem: streakItem,),
+                child: CameraWidget(height: wHeight, width: wWidth, streakItemIdx: streakItemIdx,),
               ),
             ],
           ),

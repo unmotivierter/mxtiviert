@@ -56,6 +56,7 @@ class StreakItem {
   Duration duration;
   Duration intervall;
   int amountPerIntervall;
+  int amountLeft;
 
   StreakItem(
     this.title,
@@ -67,6 +68,7 @@ class StreakItem {
     this.duration,
     this.intervall,
     this.amountPerIntervall,
+    this.amountLeft,
   );
 }
 
@@ -90,10 +92,11 @@ class Globals extends ChangeNotifier {
       12,
       30,
       4,
-      true,
+      false,
       "Group 1",
       Duration(hours: 2),
       Duration(hours: 2),
+      1,
       1,
     ),
     StreakItem(
@@ -101,10 +104,11 @@ class Globals extends ChangeNotifier {
       1,
       14,
       0,
-      false,
+      true,
       "PePe",
       Duration(seconds: 10),
       Duration(seconds: 10),
+      2,
       2,
     ),
   ];
@@ -172,9 +176,14 @@ class Globals extends ChangeNotifier {
   }
 
   void onTimeout(int idx) {
-    streakItems[idx].streakCount = 0;
+    final streakItem = streakItems[idx];
+    if(streakItem.amountLeft > 0){
+      streakItems[idx].streakCount = 0;
+    }
 
-    streakItems[idx].duration = streakItems[idx].intervall;
+    streakItems[idx].duration = streakItem.intervall;
+
+    streakItems[idx].amountLeft = streakItem.amountPerIntervall;
 
     _timers[idx]?.cancel();
     startTimer(idx);

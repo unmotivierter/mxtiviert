@@ -212,6 +212,7 @@ class _AddGoalsState extends State<AddGoals> {
         Duration(hours: hours, days: days, minutes: minutes),
         Duration(hours: hours, days: days, minutes: minutes),
         amount,
+        amount,
       ),
     );
     Navigator.pop(context);

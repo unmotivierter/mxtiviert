@@ -7,14 +7,15 @@ import 'package:provider/provider.dart';
 import 'package:mxtivation/main.dart';
 
 class PhotoGallery extends StatelessWidget {
-  const PhotoGallery({super.key, required this.streakItem});
-  final StreakItem streakItem;
-  //741335372
+  const PhotoGallery({super.key, required this.streakItemIdx});
+  final int streakItemIdx;
+
   @override
   Widget build(BuildContext context) {
+    final StreakItem streakItem = context.read<Globals>().streakItems[streakItemIdx];
 
     if(context.read<Globals>().getPhotosForItem[streakItem.title] == null){
-      List<File> streakPhotos = getStreakPhotos(context);
+      List<File> streakPhotos = getStreakPhotos(context, streakItem.title);
       Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
       context.read<Globals>().getPhotosForItem.addEntries([
         MapEntry(streakItem.title, StreakPhotos()),
@@ -32,15 +33,15 @@ class PhotoGallery extends StatelessWidget {
       body: ListView(
         scrollDirection: Axis.vertical,
         children: [
-          for(final photo in streakPhotos.reversed) PhotoItem(photo: photo, verified: verifiedPhotos[photo.path]!, streakItem: streakItem,),
+          for(final photo in streakPhotos.reversed) PhotoItem(photo: photo, verified: verifiedPhotos[photo.path]!, streakItemIdx: streakItemIdx,),
         ],
       )
     );
   }
 
 
-  List<File> getStreakPhotos(BuildContext context){
-    final String streakName = streakItem.title.replaceAll(' ', '_');
+  List<File> getStreakPhotos(BuildContext context, String streakName){
+    streakName = streakName.replaceAll(' ', '_');
     final imageDir = context.read<Globals>().imageDir;
     final List<File> matchingFiles = [];
     final regex = RegExp('^${RegExp.escape(streakName)}_(\\d+)\\.png\$');
@@ -67,9 +68,9 @@ class PhotoGallery extends StatelessWidget {
 
 // ignore: must_be_immutable
 class PhotoItem extends StatefulWidget {
-  PhotoItem({super.key, required this.photo, required this.verified, required this.streakItem});
+  PhotoItem({super.key, required this.photo, required this.verified, required this.streakItemIdx});
+  final int streakItemIdx;
   final File photo;
-  final StreakItem streakItem;
   bool verified;
 
   @override
@@ -79,37 +80,58 @@ class PhotoItem extends StatefulWidget {
 class _PhotoItemState extends State<PhotoItem> {
   @override
   Widget build(BuildContext context) {
+    final StreakItem streakItem = context.read<Globals>().streakItems[widget.streakItemIdx];
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.6,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          image: DecorationImage(
-            image: FileImage(widget.photo),
-            fit: BoxFit.cover
-          )
-        ),
-        child: Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  widget.verified = !widget.verified;
-                });
-                if(context.read<Globals>().getPhotosForItem[widget.streakItem.title] != null){
-                 context.read<Globals>().getPhotosForItem[widget.streakItem.title]!.verifiedPhotos[widget.photo.path] = true;
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.verified? Colors.green: Colors.red,
-              ),
-              child: widget.verified? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank)
+      child: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              image: DecorationImage(
+                image: FileImage(widget.photo),
+                fit: BoxFit.cover
+              )
             ),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.verified = !widget.verified;
+                    });
+                    if(context.read<Globals>().getPhotosForItem[streakItem.title] != null){
+                    context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos[widget.photo.path] = true;
+                    }
+                    context.read<Globals>().streakItems[widget.streakItemIdx].amountLeft--;
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.verified? Colors.green: Colors.red,
+                  ),
+                  child: widget.verified? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank)
+                ),
+              ),
+            )
           ),
-        )
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 200,
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(Icons.account_circle),
+                  streakItem.solo? Flexible(child: Text(streakItem.goaler, overflow: TextOverflow.ellipsis,)) 
+                  : Flexible(child: Text("Person of Group ${streakItem.goaler}", overflow: TextOverflow.ellipsis,)),
+                ],
+              )
+            ),
+          )
+        ],
       ),
     );
   }

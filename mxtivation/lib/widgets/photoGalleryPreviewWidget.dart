@@ -31,7 +31,7 @@ class PhotoGalleryPreviewWidget extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) {
                 //add check if no photos then do normal container
-                return PhotoGallery(streakItem: context.read<Globals>().streakItems[streakItemIdx],);
+                return PhotoGallery(streakItemIdx: streakItemIdx,);
               },
             ),
           );

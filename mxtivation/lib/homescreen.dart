@@ -159,7 +159,7 @@ class StreakScrollerItem extends StatelessWidget {
             left: 150,
             top: 75,
             child: Text(
-              "Actions left: ${context.watch<Globals>().streakItems[idx].amountPerIntervall}",
+              "Actions left: ${context.watch<Globals>().streakItems[idx].amountLeft}",
             ),
           ),
           Align(
