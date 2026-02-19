@@ -20,6 +20,7 @@ class _AddGoalsState extends State<AddGoals> {
   int hours = 0;
   int minutes = 0;
   int amount = 0;
+  String intervalltxt = "Select Your Intervall";
 
   bool isSolo = true;
 
@@ -84,10 +85,7 @@ class _AddGoalsState extends State<AddGoals> {
               ],
             ),
             ElevatedButton(
-              child: Text(
-                "Select your Intervall",
-                style: TextStyle(fontSize: 20),
-              ),
+              child: Text(intervalltxt, style: TextStyle(fontSize: 20)),
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
@@ -111,6 +109,7 @@ class _AddGoalsState extends State<AddGoals> {
                                 width: 100,
                                 child: TextField(
                                   keyboardType: TextInputType.number,
+                                  autofocus: true,
 
                                   onChanged: (value) => setStateSheet(() {
                                     amt = int.parse(value);
@@ -120,7 +119,7 @@ class _AddGoalsState extends State<AddGoals> {
 
                               Row(
                                 children: [
-                                  Text("Days:", style: TextStyle(fontSize: 20)),
+                                  Text("Days:", style: TextStyle(fontSize: 15)),
                                   NumberPicker(
                                     itemWidth: 50,
                                     infiniteLoop: true,
@@ -163,7 +162,10 @@ class _AddGoalsState extends State<AddGoals> {
                               ),
 
                               ElevatedButton(
-                                child: Text("Done"),
+                                child: Text(
+                                  "Done",
+                                  style: TextStyle(fontSize: 20),
+                                ),
 
                                 onPressed: () {
                                   setState(() {
@@ -171,6 +173,9 @@ class _AddGoalsState extends State<AddGoals> {
                                     hours = hourController;
                                     minutes = minuteController;
                                     amount = amt;
+
+                                    intervalltxt =
+                                        "$amount actions every $days days, $hours hours and $minutes minutes";
                                   });
 
                                   Navigator.pop(context);
@@ -186,7 +191,10 @@ class _AddGoalsState extends State<AddGoals> {
               },
             ),
 
-            ElevatedButton(onPressed: () => _onPressed(), child: Text("Done")),
+            ElevatedButton(
+              onPressed: () => _onPressed(),
+              child: Text("Add Goal", style: TextStyle(fontSize: 20)),
+            ),
           ],
         ),
       ),
