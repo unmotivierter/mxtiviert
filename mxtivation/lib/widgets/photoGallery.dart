@@ -106,7 +106,6 @@ class _PhotoItemState extends State<PhotoItem> {
                     if(context.read<Globals>().getPhotosForItem[streakItem.title] != null){
                     context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos[widget.photo.path] = true;
                     }
-                    context.read<Globals>().streakItems[widget.streakItemIdx].amountLeft--;
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.verified? Colors.green: Colors.red,
