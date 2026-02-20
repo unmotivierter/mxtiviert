@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 
@@ -42,7 +44,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    
+    context.read<Globals>().loadData();
     updateTime(context); 
 
     return MaterialApp(
@@ -232,7 +235,7 @@ class Globals extends ChangeNotifier {
   Future<void> saveTime() async{
     final streakTimers = {
       for (var item in streakItems)
-        item.title: item.duration.inSeconds, // store timer as seconds
+        item.title: item.duration.inSeconds,
     };
 
     final dataToSave = {

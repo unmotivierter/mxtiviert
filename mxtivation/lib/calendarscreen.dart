@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mxtivation/main.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +12,7 @@ class Calendarscreen extends StatefulWidget {
 }
 
 class _CalendarscreenState extends State<Calendarscreen> {
-  DateTime _focusedDay = DateTime.now();
+  DateTime focusedDay = DateTime.now();
   //DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
@@ -37,7 +35,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
     context.read<Globals>().updateStreakColors();
   }
 
-  bool isStreakDayByCurrentStreak(DateTime _day) {
+  bool isStreakDayByCurrentStreak(DateTime day) {
     final currentDate = DateTime.now();
     for (
       int i = 0;
@@ -46,7 +44,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
     ) {
       final streakDate = currentDate.subtract(Duration(days: i));
 
-      if (isSameDay(streakDate, _day)) {
+      if (isSameDay(streakDate, day)) {
         return true;
       }
     }
@@ -98,7 +96,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
             child: Container(
               color: Theme.of(context).colorScheme.surfaceContainer,
               child: TableCalendar(
-                focusedDay: _focusedDay,
+                focusedDay: focusedDay,
                 firstDay: DateTime(DateTime.now().year - 1),
                 lastDay: DateTime.now(),
                 /*selectedDayPredicate: (day) {
@@ -117,11 +115,11 @@ class _CalendarscreenState extends State<Calendarscreen> {
                     _calendarFormat = format;
                   });
                 },
-                onPageChanged: (focusedDay) => setState(() {
-                  _focusedDay = focusedDay;
+                onPageChanged: (focusedDayUpdt) => setState(() {
+                  focusedDay = focusedDay;
                 }),
                 calendarBuilders: CalendarBuilders(
-                  defaultBuilder: (context, day, _focusedDay) {
+                  defaultBuilder: (context, day, focusedDay) {
                     if (isStreakDayByList(
                       day,
                       context.read<Globals>().selectedStreak,
@@ -143,7 +141,7 @@ class _CalendarscreenState extends State<Calendarscreen> {
                     }
                     return null;
                   },
-                  todayBuilder: (context, day, _focusedDay) {
+                  todayBuilder: (context, day, focusedDay) {
                     if (isStreakDayByList(
                       day,
                       context.read<Globals>().selectedStreak,
