@@ -189,8 +189,9 @@ class DisplayPictureScreen extends StatelessWidget {
             onPressed: () {
               if(context.read<Globals>().streakItems[streakItemIdx].amountLeft > 0){
                 context.read<Globals>().streakItems[streakItemIdx].amountLeft--;
+                context.read<Globals>().saveData();
                 if(context.read<Globals>().streakItems[streakItemIdx].amountLeft == 0){
-                  context.read<Globals>().streakItems[streakItemIdx].streakCount++;
+                  context.read<Globals>().updateStreak(streakItemIdx, false);
                 }
               }
               Navigator.of(context)..pop()..pop();

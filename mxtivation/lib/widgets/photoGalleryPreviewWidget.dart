@@ -67,7 +67,6 @@ class PhotoGalleryPreviewWidget extends StatelessWidget {
       return fotoPath;
     }
     else {
-      debugPrint("no file at: $fotoPath");
       return "";
     }
   }

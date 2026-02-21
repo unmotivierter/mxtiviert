@@ -11,6 +11,9 @@ class StreakScreenSp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(streakItemIdx >= context.read<Globals>().streakItems.length){
+      return Placeholder();
+    }
     final StreakItem streakItem = context.watch<Globals>().streakItems[streakItemIdx];
     final double wHeight = MediaQuery.of(context).size.height / 2.5;
     final double wWidth = MediaQuery.of(context).size.width / 2.5;
@@ -29,6 +32,54 @@ class StreakScreenSp extends StatelessWidget {
             color: Theme.of(context).colorScheme.primaryContainer,
           ),
         ),
+        actions: [
+          MenuAnchor(
+            builder:(context, controller, child) {
+              return IconButton(
+                onPressed: () {
+                  controller.isOpen? controller.close() : controller.open();
+                }, 
+                icon: Icon(Icons.more_horiz)
+                );
+              },
+            menuChildren: [
+              MenuItemButton(
+                child: Text("Settings"),
+              ),
+              MenuItemButton(
+                onPressed: () {
+                  showDialog(
+                    context: context, 
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Do you want to delete this streak?"),
+                        content: Text("It is irreversible and might have terrible consequences!"),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(), 
+                            child: Text("no")
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              final globals = Provider.of<Globals>(context, listen: false);
+                              Navigator.of(context)..pop()..pop();
+                              //context.read<Globals>().removeStreakItemAtIdx(streakItemIdx);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                globals.removeStreakItemAtIdx(streakItemIdx);
+                              });
+                            },
+                            child: Text("yes")
+                          )
+                        ],
+                      );
+                    }
+                  );
+                },
+                child: Text("delete")
+              )
+            ],
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +127,7 @@ class StreakScreenSp extends StatelessWidget {
           ),
         ],
       ),
+
     );
   }
 }

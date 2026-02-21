@@ -66,14 +66,27 @@ class MainApp extends StatelessWidget {
     final items  = context.read<Globals>().streakItems;
 
     for(var entry in timers.entries){
+      //logic might just be flawed if timer is 0
+      //(defenetly didn't cause the app not to load)
+      /*
       int overflows = 0;
-      int remaining = entry.value;     
+      int remaining = (entry.value != 0)? entry.value : 1;     
 
       while((remaining - timeDiff) < 0){
-        timeDiff -= entry.value;
+        timeDiff -= remaining;
         overflows++;
       }
       remaining = entry.value - timeDiff;
+      */
+      int idx = getIdxFromStreakName(context, entry.key);
+      if(idx == -1){continue;}
+      int timerSeconds = entry.value;
+      if(timerSeconds <= 0){
+        timerSeconds = context.read<Globals>().streakItems[idx].intervall.inSeconds;
+      }
+
+      final int overflows = timeDiff ~/ timerSeconds;
+      final int remaining = timerSeconds - (timeDiff % timerSeconds);
 
       for(int i = 0; i < items.length; i++){
         if(items[i].title == entry.key){
@@ -84,8 +97,16 @@ class MainApp extends StatelessWidget {
         }
       }
     }
-    
     context.read<Globals>().saveTime();
+  }
+  int getIdxFromStreakName(BuildContext context, String name){
+    final items = context.read<Globals>().streakItems;
+    for(int i = 0; i < items.length; i++){
+      if(items[i].title == name){
+        return i;
+      }
+    }
+    return -1;
   }
 }
 
@@ -164,6 +185,37 @@ class Globals extends ChangeNotifier {
     ),
   ];
 
+  void addStreakItem(StreakItem streakItem){
+    streakItems.add(streakItem);
+    saveData();
+    notifyListeners();
+  }
+
+  void removeStreakItemAtIdx(int idx) async {
+    final streakFileName = streakItems[idx].title.replaceAll(' ', '_');
+    final files = imageDir.listSync();
+
+    for(var file in files){
+      final name = file.uri.pathSegments.last;
+      final regex = RegExp(r'^'+ streakFileName + r'_(\d+)\.png$');
+      final match = regex.firstMatch(name);
+      if(match != null){
+        await file.delete();
+      }
+    }
+
+    streakItems.removeAt(idx);
+    saveData();
+
+    notifyListeners();
+  }
+
+  void updateStreak(int streakItemIdx, bool reset){
+    streakItems[streakItemIdx].streakCount = reset? 0 : streakItems[streakItemIdx].streakCount+1;
+    saveData();
+    notifyListeners();
+  }
+
   void selectTab(int i) {
     currentTab = TabItems.values[i];
 
@@ -195,11 +247,6 @@ class Globals extends ChangeNotifier {
         compareFunc = sortNameAscending;
         break;
     }
-    notifyListeners();
-  }
-
-  void addStreakItem(StreakItem item) {
-    streakItems.add(item);
     notifyListeners();
   }
 
@@ -303,6 +350,7 @@ class Globals extends ChangeNotifier {
 
   Map<StreakItem, Color> streakColors = {};
 
+  //maybe update from idx to a key like streak name
   void startTimer(int idx) {
     _timers[idx]?.cancel();
 
@@ -312,6 +360,7 @@ class Globals extends ChangeNotifier {
   }
 
   void reduceTime(int idx) {
+    if(idx >= streakItems.length) return;
     final currentDuration = streakItems[idx].duration;
     final seconds = currentDuration.inSeconds - 1;
 
@@ -328,7 +377,7 @@ class Globals extends ChangeNotifier {
   void onTimeout(int idx) {
     final streakItem = streakItems[idx];
     if (streakItem.amountLeft > 0) {
-      streakItems[idx].streakCount = 0;
+      updateStreak(idx, true);
     }
 
     streakItems[idx].duration = streakItem.intervall;
@@ -361,7 +410,7 @@ class Globals extends ChangeNotifier {
     for (int i = 0; i < streakItems[streakIdx].dates.length; i++) {
       addNewDate(streakIdx, streakItems[streakIdx].dates[i]);
     }
-
+    saveData();
     notifyListeners();
   }
 
@@ -371,6 +420,8 @@ class Globals extends ChangeNotifier {
     streakDays.putIfAbsent(normalizedDate, () => <int>{});
 
     streakDays[normalizedDate]!.add(streakIdx);
+
+    saveData();
 
     notifyListeners();
   }

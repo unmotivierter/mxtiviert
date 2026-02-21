@@ -41,8 +41,6 @@ class _StreakScrollerState extends State<StreakScroller> {
   @override
   Widget build(BuildContext context) {
 
-    context.read<Globals>().saveData();
-
     myCallback = () {
       setState(() {
         temp = true;
