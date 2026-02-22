@@ -11,7 +11,12 @@ import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
 class CameraWidget extends StatelessWidget {
-  const CameraWidget({super.key, required this.height, required this.width, required this.streakItemIdx});
+  const CameraWidget({
+    super.key,
+    required this.height,
+    required this.width,
+    required this.streakItemIdx,
+  });
   final double height;
   final double width;
   final int streakItemIdx;
@@ -30,14 +35,20 @@ class CameraWidget extends StatelessWidget {
       ),
       onTap: () async {
         WidgetsFlutterBinding.ensureInitialized();
+
         _cameras = await availableCameras();
         debugPrint("$_cameras");
+
+        if (_cameras.isEmpty) {
+          return;
+        }
         //might need to be changed to _cameras[0] on real devices
-        final firstCamera = _cameras[1];
+        final firstCamera = (_cameras.length > 1) ? _cameras[1] : _cameras[0];
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CameraScreen(camera: firstCamera, streakItemIdx: streakItemIdx,),
+            builder: (context) =>
+                CameraScreen(camera: firstCamera, streakItemIdx: streakItemIdx),
           ),
         );
       },
@@ -48,7 +59,11 @@ class CameraWidget extends StatelessWidget {
 late List<CameraDescription> _cameras;
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key, required this.camera, required this.streakItemIdx});
+  const CameraScreen({
+    super.key,
+    required this.camera,
+    required this.streakItemIdx,
+  });
 
   final CameraDescription camera;
   final int streakItemIdx;
@@ -78,17 +93,18 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final streakItem = context.read<Globals>().streakItems[widget.streakItemIdx];
+    final streakItem = context
+        .read<Globals>()
+        .streakItems[widget.streakItemIdx];
     return Scaffold(
       body: Stack(
         children: [
           FutureBuilder<void>(
             future: _initializeControllerFuture,
             builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.done){
+              if (snapshot.connectionState == ConnectionState.done) {
                 return CameraPreview(_controller);
-              }
-              else {
+              } else {
                 return const Center(child: CircularProgressIndicator());
               }
             },
@@ -101,39 +117,63 @@ class _CameraScreenState extends State<CameraScreen> {
               },
               child: Icon(Icons.cancel),
             ),
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          try{
+          try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-            if(!context.mounted) return;
-            final String newPath = await saveImageToAppFolder(image.path, streakItem.title); 
+            if (!context.mounted) return;
+            final String newPath = await saveImageToAppFolder(
+              image.path,
+              streakItem.title,
+            );
 
-            if(context.read<Globals>().getPhotosForItem[streakItem.title] == null){
-              List<File> streakPhotos = getStreakPhotos(context, streakItem.title);
-              Map<String, bool> verifiedPhotos = {for (final file in streakPhotos) file.path: false,};
+            if (context.read<Globals>().getPhotosForItem[streakItem.title] ==
+                null) {
+              List<File> streakPhotos = getStreakPhotos(
+                context,
+                streakItem.title,
+              );
+              Map<String, bool> verifiedPhotos = {
+                for (final file in streakPhotos) file.path: false,
+              };
               context.read<Globals>().getPhotosForItem.addEntries([
-                MapEntry(streakItem.title, StreakPhotos(photos: streakPhotos, verifiedPhotos: verifiedPhotos)),
+                MapEntry(
+                  streakItem.title,
+                  StreakPhotos(
+                    photos: streakPhotos,
+                    verifiedPhotos: verifiedPhotos,
+                  ),
+                ),
               ]);
               //context.read<Globals>().getPhotosForItem[streakItem.title]!.photos = streakPhotos;
               //context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos = verifiedPhotos;
-            }
-            else{
-              context.read<Globals>().getPhotosForItem[streakItem.title]!.photos.add(File(newPath));
-              context.read<Globals>().getPhotosForItem[streakItem.title]!.verifiedPhotos.addEntries([MapEntry(newPath, false)]);
+            } else {
+              context
+                  .read<Globals>()
+                  .getPhotosForItem[streakItem.title]!
+                  .photos
+                  .add(File(newPath));
+              context
+                  .read<Globals>()
+                  .getPhotosForItem[streakItem.title]!
+                  .verifiedPhotos
+                  .addEntries([MapEntry(newPath, false)]);
             }
 
             await Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (context) => DisplayPictureScreen(
-                  imagePath: newPath, streakName: streakItem.title, streakItemIdx: widget.streakItemIdx,
+                  imagePath: newPath,
+                  streakName: streakItem.title,
+                  streakItemIdx: widget.streakItemIdx,
                 ),
               ),
             );
-          } catch(e){
+          } catch (e) {
             debugPrint("$e");
           }
         },
@@ -142,18 +182,16 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-
-
-  List<File> getStreakPhotos(BuildContext context, String streakName){
+  List<File> getStreakPhotos(BuildContext context, String streakName) {
     streakName = streakName.replaceAll(' ', '_');
     final imageDir = context.read<Globals>().imageDir;
     final List<File> matchingFiles = [];
     final regex = RegExp('^${RegExp.escape(streakName)}_(\\d+)\\.png\$');
-    for(final entity in imageDir.listSync()){
-      if(entity is File){
+    for (final entity in imageDir.listSync()) {
+      if (entity is File) {
         final fileName = entity.uri.pathSegments.last;
         final match = regex.firstMatch(fileName);
-        if(match != null){
+        if (match != null) {
           matchingFiles.add(entity);
         }
       }
@@ -175,8 +213,12 @@ class DisplayPictureScreen extends StatelessWidget {
   final String streakName;
   final int streakItemIdx;
 
-  const DisplayPictureScreen({super.key, required this.imagePath, required this.streakName, required this.streakItemIdx});
-
+  const DisplayPictureScreen({
+    super.key,
+    required this.imagePath,
+    required this.streakName,
+    required this.streakItemIdx,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -187,28 +229,50 @@ class DisplayPictureScreen extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
-              if(context.read<Globals>().streakItems[streakItemIdx].amountLeft > 0){
+              if (context
+                      .read<Globals>()
+                      .streakItems[streakItemIdx]
+                      .amountLeft >
+                  0) {
                 context.read<Globals>().streakItems[streakItemIdx].amountLeft--;
                 context.read<Globals>().saveData();
-                if(context.read<Globals>().streakItems[streakItemIdx].amountLeft == 0){
+                if (context
+                        .read<Globals>()
+                        .streakItems[streakItemIdx]
+                        .amountLeft ==
+                    0) {
                   context.read<Globals>().updateStreak(streakItemIdx, false);
                 }
               }
-              Navigator.of(context)..pop()..pop();
+              Navigator.of(context)
+                ..pop()
+                ..pop();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),  
-            child: const Text("use photo")
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            ),
+            child: const Text("use photo"),
           ),
           ElevatedButton(
             onPressed: () async {
               final file = File(imagePath);
               await file.delete();
-              context.read<Globals>().getPhotosForItem[streakName]!.photos.removeLast();
-              context.read<Globals>().getPhotosForItem[streakName]!.verifiedPhotos.remove(imagePath);
+              context
+                  .read<Globals>()
+                  .getPhotosForItem[streakName]!
+                  .photos
+                  .removeLast();
+              context
+                  .read<Globals>()
+                  .getPhotosForItem[streakName]!
+                  .verifiedPhotos
+                  .remove(imagePath);
               Navigator.of(context).pop();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),  
-            child: const Text("retake")
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            ),
+            child: const Text("retake"),
           ),
         ],
       ),
@@ -231,23 +295,29 @@ Future<String> saveImageToAppFolder(String oldPath, String streakName) async {
   return newFile.path;
 }
 
-Future<String> streakToFileName(String dirPath, String streakName, bool increment) async {
+Future<String> streakToFileName(
+  String dirPath,
+  String streakName,
+  bool increment,
+) async {
   streakName = streakName.replaceAll(' ', '_');
   final directory = Directory(dirPath);
   final files = directory.listSync();
 
   int maxNum = 0;
-  
-  for(var file in files){
+
+  for (var file in files) {
     final name = file.uri.pathSegments.last;
-    final regex = RegExp(r'^'+ streakName + r'_(\d+)\.png$');
+    final regex = RegExp(r'^' + streakName + r'_(\d+)\.png$');
     final match = regex.firstMatch(name);
-    if(match != null){
+    if (match != null) {
       final number = int.tryParse(match.group(1)!);
-      if(number != null && number > maxNum){
+      if (number != null && number > maxNum) {
         maxNum = number;
       }
     }
   }
-  return increment ? '$dirPath/${streakName}_${maxNum+1}.png' : '$dirPath/${streakName}_$maxNum.png';
+  return increment
+      ? '$dirPath/${streakName}_${maxNum + 1}.png'
+      : '$dirPath/${streakName}_$maxNum.png';
 }
