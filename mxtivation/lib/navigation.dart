@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'groupscreen.dart';
 import 'homescreen.dart';
 import 'main.dart';
 import 'goals.dart';
@@ -163,7 +164,7 @@ class _AppState extends State<App> {
         );
 
       case TabItems.group:
-        selectedWidget = Text("The group screen");
+        selectedWidget = GroupScroller();
 
       case TabItems.calendar:
         selectedWidget = Calendarscreen();

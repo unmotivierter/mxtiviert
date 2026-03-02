@@ -10,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
+import 'groupscreen.dart';
 import 'navigation.dart';
 import 'comparefunctions.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -116,7 +117,7 @@ class StreakItem {
   int streakPbCount;
   int groupStreak;
   bool solo;
-  String goaler; //name of person/group who have goal :)
+  dynamic goaler; //person/group who have goal :)
   Duration duration;
   Duration intervall;
   int amountPerIntervall;
@@ -138,6 +139,18 @@ class StreakItem {
   });
 }
 
+class Profile{
+  String username;
+  Profile({required this.username});
+  //not finished at all
+}
+
+class Group{
+  String groupname;
+  List<Profile> members = [];
+  Group({required this.groupname});
+}
+
 class StreakPhotos {
   List<File> photos = [];
   Map<String, bool> verifiedPhotos = {};
@@ -156,33 +169,10 @@ class Globals extends ChangeNotifier {
 
   int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;
 
-  List<StreakItem> streakItems = [
-    StreakItem(
-      title: "Streak 1",
-      streakCount: 12,
-      streakPbCount: 30,
-      groupStreak: 4,
-      solo: false,
-      goaler: "Group 1",
-      duration: Duration(hours: 2),
-      intervall: Duration(hours: 2),
-      amountPerIntervall: 1,
-      amountLeft: 1,
-      dates: [DateTime(2026, 2, 1)],
-    ),
-    StreakItem(
-      title: "Streak 2",
-      streakCount: 1,
-      streakPbCount: 14,
-      groupStreak: 0,
-      solo: true,
-      goaler: "PePe",
-      duration: Duration(seconds: 10),
-      intervall: Duration(minutes: 2),
-      amountPerIntervall: 2,
-      amountLeft: 2,
-      dates: [DateTime(2026, 2, 15)],
-    ),
+  List<StreakItem> streakItems = [];
+  List<Group> groups = [
+    Group(groupname: "Gruppe 1"),
+    Group(groupname: "Gruppe 2"),
   ];
 
   void addStreakItem(StreakItem streakItem){
@@ -212,6 +202,13 @@ class Globals extends ChangeNotifier {
 
   void updateStreak(int streakItemIdx, bool reset){
     streakItems[streakItemIdx].streakCount = reset? 0 : streakItems[streakItemIdx].streakCount+1;
+    saveData();
+    notifyListeners();
+  }
+
+  void addGroup(String name){
+    groups.add(Group(groupname: name));
+
     saveData();
     notifyListeners();
   }
