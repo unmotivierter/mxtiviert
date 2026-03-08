@@ -1,8 +1,11 @@
 TODO list:
 
+  Major Bugs:
+    timers used to work on restart now they keep resetting HELP
+    
   Groups:
     make GroupScrollerItem better
-    add to hive
-    add group button
+    make GroupView better
+    add group needs more functionality
 
 LOOK AT MY COMMENTS

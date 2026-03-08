@@ -84,7 +84,7 @@ class GroupView extends StatelessWidget {
               final streakItems = context.read<Globals>().streakItems;
               List<StreakItem> groupStreakItems = [];
               for(final streakItem in streakItems){
-                if(streakItem.goaler_id == id){
+                if(streakItem.goalerId == id){
                   groupStreakItems.add(streakItem);
                 }
               }

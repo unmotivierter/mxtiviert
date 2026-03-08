@@ -223,7 +223,7 @@ class _AddGoalsState extends State<AddGoals> {
         groupStreak: 0,
         solo: isSolo,
         goaler: group,
-        goaler_id: id,
+        goalerId: id,
         duration: Duration(hours: hours, days: days, minutes: minutes),
         intervall: Duration(hours: hours, days: days, minutes: minutes),
         amountPerIntervall: amount,

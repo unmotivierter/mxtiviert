@@ -79,6 +79,8 @@ class MainApp extends StatelessWidget {
       }
       remaining = entry.value - timeDiff;
       */
+
+      //TODO: timers now resetting idk why needs fix
       int idx = getIdxFromStreakName(context, entry.key);
       if(idx == -1){continue;}
       int timerSeconds = entry.value;
@@ -118,7 +120,7 @@ class StreakItem {
   int groupStreak;
   bool solo;
   String goaler; //name of person/group who have goal :)
-  int goaler_id;
+  int goalerId;
   Duration duration;
   Duration intervall;
   int amountPerIntervall;
@@ -132,7 +134,7 @@ class StreakItem {
     required this.groupStreak,
     required this.solo,
     required this.goaler,
-    required this.goaler_id,
+    required this.goalerId,
     this.duration = const Duration(days: 1),
     required this.intervall,
     required this.amountPerIntervall,
@@ -162,9 +164,14 @@ class StreakPhotos {
 }
 
 class Globals extends ChangeNotifier {
-  int highestId = 0;
+  Profile profile = Profile(id: 0, username: "");
+  bool loggedIn = false;
+  int highestId = 1;
   Globals({required this.imageDir}){
-    Profile(username: "Ich", id: nextId());
+    if(!loggedIn){
+      Profile(username: "Ich", id: 0);
+      loggedIn = true;
+    }
   }
   Directory imageDir = Directory('');
 
@@ -261,7 +268,7 @@ class Globals extends ChangeNotifier {
         'groupStreak': e.groupStreak,
         'solo': e.solo,
         'goaler': e.goaler,
-        'goaler_id': e.goaler_id,
+        'goalerId': e.goalerId,
         'intervall': e.intervall.inSeconds,
         'amountPerIntervall': e.amountPerIntervall,
         'amountLeft': e.amountLeft,
@@ -276,6 +283,9 @@ class Globals extends ChangeNotifier {
           'verifiedPhotos': value.verifiedPhotos,
         }),
       ),
+      'highestId': highestId,
+      'profile': {'id': profile.id, 'username': profile.username},
+      'groups': groups.map((g) => {'id': g.id, 'groupname': g.groupname}).toList(),
     };
 
     await box.put('appData', data);
@@ -326,7 +336,7 @@ class Globals extends ChangeNotifier {
         groupStreak: e['groupStreak'],
         solo: e['solo'],
         goaler: e['goaler'],
-        goaler_id: e['goaler_id'],
+        goalerId: e['goalerId'],
         intervall: Duration(seconds: e['intervall']),
         dates: (e['dates'] as List).map((ms) => DateTime.fromMicrosecondsSinceEpoch(ms)).toList(),
         amountPerIntervall: e['amountPerIntervall'],
@@ -345,6 +355,10 @@ class Globals extends ChangeNotifier {
         ),
       ),
     );
+
+    highestId = data['highestId'];
+    profile = Profile(id: data['profile']['id'], username: data['profile']['username']);
+    groups = (data['groups'] as List).map((g) => Group(id: g['id'], groupname: g['groupname'])).toList();
   }
 
   int nextId(){
