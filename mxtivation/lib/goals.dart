@@ -20,11 +20,22 @@ class _AddGoalsState extends State<AddGoals> {
   int minutes = 0;
   int amount = 0;
   String intervalltxt = "Select Your Intervall";
+  int id = 0;
 
   bool isSolo = true;
 
   @override
   Widget build(BuildContext context) {
+    final groups = context.read<Globals>().groups;
+    List<DropdownMenuEntry<int>> groupEntries(){
+      List<DropdownMenuEntry<int>> entries = [];
+      for(final group in groups){
+        entries.add(
+          DropdownMenuEntry(value: group.id, label: group.groupname)
+        );
+      }
+      return entries;
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.outlineVariant,
       appBar: AppBar(
@@ -70,14 +81,16 @@ class _AddGoalsState extends State<AddGoals> {
                   enabled: !isSolo,
                   enableSearch: false,
                   label: Text("Personal"),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: "Personal", label: "Personal"),
-                    DropdownMenuEntry(value: "gr2", label: "Group1"),
-                    DropdownMenuEntry(value: "gr3", label: "Group2"),
+                  dropdownMenuEntries: <DropdownMenuEntry<int>>[
+                    const DropdownMenuEntry<int>(value: 0, label: "Personal"),
+                    ...groupEntries(),
                   ],
-                  onSelected: (valueNotifier) {
+                  onSelected: (idx) {
                     setState(() {
-                      group = valueNotifier.toString();
+                      if(idx! > 0){
+                        group = groups[idx-1].groupname;
+                        id = idx;
+                      }
                     });
                   },
                 ),
@@ -201,6 +214,7 @@ class _AddGoalsState extends State<AddGoals> {
   }
 
   void _onPressed() {
+    //the id generator needs to be added
     Provider.of<Globals>(context, listen: false).addStreakItem(
       StreakItem(
         title: goalName,
@@ -209,6 +223,7 @@ class _AddGoalsState extends State<AddGoals> {
         groupStreak: 0,
         solo: isSolo,
         goaler: group,
+        goaler_id: id,
         duration: Duration(hours: hours, days: days, minutes: minutes),
         intervall: Duration(hours: hours, days: days, minutes: minutes),
         amountPerIntervall: amount,

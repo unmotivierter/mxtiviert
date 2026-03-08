@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'main.dart';
 import 'groupview.dart';
+import 'widgets/addGroup.dart';
 
 class GroupScroller extends StatefulWidget {
   const GroupScroller({super.key});
@@ -55,7 +56,12 @@ class _GroupScrollerState extends State<GroupScroller> {
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
               // AddGroup Screen
-              onPressed: () => {},
+              onPressed: () => {
+                showModalBottomSheet(
+                  context: context, 
+                  builder: (context) => AddGroup(),
+                )
+              },
               child: Icon(Icons.add)
             ),
           ),

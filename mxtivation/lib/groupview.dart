@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:mxtivation/main.dart';
 import 'package:provider/provider.dart';
+import 'package:mxtivation/homescreen.dart';
 
 class GroupView extends StatelessWidget {
   const GroupView({super.key, required this.groupIdx});
@@ -8,13 +10,14 @@ class GroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double wHeight = MediaQuery.of(context).size.height / 2.5;
-    final double wWidth = MediaQuery.of(context).size.width / 2.5;
+    final double wHeight = MediaQuery.of(context).size.height/3.5;
     if(groupIdx >= context.read<Globals>().groups.length){return Placeholder();}
+    String groupname = context.read<Globals>().groups[groupIdx].groupname;
+    int id = context.read<Globals>().groups[groupIdx].id;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.read<Globals>().groups[groupIdx].groupname,
+          groupname,
           style: TextStyle(
             color: Theme.of(context).colorScheme.primaryContainer,
           ),
@@ -68,38 +71,47 @@ class GroupView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 20,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20,
-            children: [
-              Container(
-                height: wHeight,
-                width: wWidth,
-                color: Theme.of(context).colorScheme.secondaryContainer
+          Center(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Text(groupname,
+                style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
-              Container(
-                height: wHeight,
-                width: wWidth,
-                color: Theme.of(context).colorScheme.secondaryContainer
-              ),
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20,
-            children: [
-              Container(
-                height: wHeight,
-                width: wWidth,
-                color: Theme.of(context).colorScheme.secondaryContainer
+          InkWell(
+            onTap: () {
+              final streakItems = context.read<Globals>().streakItems;
+              List<StreakItem> groupStreakItems = [];
+              for(final streakItem in streakItems){
+                if(streakItem.goaler_id == id){
+                  groupStreakItems.add(streakItem);
+                }
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: Text("$groupname's streaks"),
+                  ),
+                  body: Container(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                      child: StreakScroller(streakItems: groupStreakItems)
+                    ),
+                  )
+                ),
+              );
+            },
+            child: Container(
+              height: wHeight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                color: Theme.of(context).colorScheme.primaryContainer
               ),
-              Container(
-                height: wHeight,
-                width: wWidth,
-                color: Theme.of(context).colorScheme.secondaryContainer
-              ),
-            ],
+            ),
           ),
+          Container(height: wHeight,),
         ],
       ),
 

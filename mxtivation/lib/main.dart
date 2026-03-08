@@ -10,7 +10,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
-import 'groupscreen.dart';
 import 'navigation.dart';
 import 'comparefunctions.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -47,6 +46,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     
     context.read<Globals>().loadData();
+    //context.read<Globals>().saveData();
     updateTime(context); 
 
     return MaterialApp(
@@ -117,7 +117,8 @@ class StreakItem {
   int streakPbCount;
   int groupStreak;
   bool solo;
-  dynamic goaler; //person/group who have goal :)
+  String goaler; //name of person/group who have goal :)
+  int goaler_id;
   Duration duration;
   Duration intervall;
   int amountPerIntervall;
@@ -131,6 +132,7 @@ class StreakItem {
     required this.groupStreak,
     required this.solo,
     required this.goaler,
+    required this.goaler_id,
     this.duration = const Duration(days: 1),
     required this.intervall,
     required this.amountPerIntervall,
@@ -141,14 +143,16 @@ class StreakItem {
 
 class Profile{
   String username;
-  Profile({required this.username});
+  int id;
+  Profile({required this.username, required this.id});
   //not finished at all
 }
 
 class Group{
   String groupname;
+  int id;
   List<Profile> members = [];
-  Group({required this.groupname});
+  Group({required this.groupname, required this.id});
 }
 
 class StreakPhotos {
@@ -158,7 +162,10 @@ class StreakPhotos {
 }
 
 class Globals extends ChangeNotifier {
-  Globals({required this.imageDir});
+  int highestId = 0;
+  Globals({required this.imageDir}){
+    Profile(username: "Ich", id: nextId());
+  }
   Directory imageDir = Directory('');
 
   final box = Hive.box('appData');
@@ -170,10 +177,7 @@ class Globals extends ChangeNotifier {
   int Function(StreakItem a, StreakItem b) compareFunc = sortStreakDescending;
 
   List<StreakItem> streakItems = [];
-  List<Group> groups = [
-    Group(groupname: "Gruppe 1"),
-    Group(groupname: "Gruppe 2"),
-  ];
+  List<Group> groups = [];
 
   void addStreakItem(StreakItem streakItem){
     streakItems.add(streakItem);
@@ -207,7 +211,7 @@ class Globals extends ChangeNotifier {
   }
 
   void addGroup(String name){
-    groups.add(Group(groupname: name));
+    groups.add(Group(groupname: name, id: nextId()));
 
     saveData();
     notifyListeners();
@@ -257,6 +261,7 @@ class Globals extends ChangeNotifier {
         'groupStreak': e.groupStreak,
         'solo': e.solo,
         'goaler': e.goaler,
+        'goaler_id': e.goaler_id,
         'intervall': e.intervall.inSeconds,
         'amountPerIntervall': e.amountPerIntervall,
         'amountLeft': e.amountLeft,
@@ -321,6 +326,7 @@ class Globals extends ChangeNotifier {
         groupStreak: e['groupStreak'],
         solo: e['solo'],
         goaler: e['goaler'],
+        goaler_id: e['goaler_id'],
         intervall: Duration(seconds: e['intervall']),
         dates: (e['dates'] as List).map((ms) => DateTime.fromMicrosecondsSinceEpoch(ms)).toList(),
         amountPerIntervall: e['amountPerIntervall'],
@@ -340,6 +346,12 @@ class Globals extends ChangeNotifier {
       ),
     );
   }
+
+  int nextId(){
+    highestId++;
+    return highestId-1;
+  }
+
 
   ///////Timer logic here:
 
